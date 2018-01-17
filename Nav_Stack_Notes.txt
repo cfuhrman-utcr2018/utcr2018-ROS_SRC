@@ -1,0 +1,11 @@
+This is the README file for the Navigation Stack as utilized in the IGVC entry from UTCR 2018 - The Citadel The Military College of South Carolina. 
+
+Author: Connor Fuhrman
+connorfuhrman@outlook.com
+
+Notes:
+- to install the urg node on the computer run 'sudo apt-get install ros-*DISTRO*-urg-node. 
+- running the rviz set the Fixed Frame to 'laser' (under Global Options). 
+- click Add then add the LaserScan option and assign the topic /scan
+
+
