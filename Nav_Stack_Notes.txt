@@ -8,4 +8,28 @@ Notes:
 - running the rviz set the Fixed Frame to 'laser' (under Global Options). 
 - click Add then add the LaserScan option and assign the topic /scan
 
+Notes from the tf Tutorial found here:
+http://wiki.ros.org/tf/Tutorials/Introduction%20to%20tf
+	
+the demo uses the tf library to create three coordinate frames: world, turtle1, and turtle2 frames. 
+
+the tf is creating three frames. the world frame is the parent of the turtle1 and turtle2 frames. you can visualize this by running rqt_tf_tree
+
+rviz can show you the different frames and how they relate to each other. You can see the different turles follow each other and how they realte to the world (parent) reference frame. Why is the world in the bottom left corner of the turtlesim??
+
+(moving to Writing a tf broadcaster (C++))
+- notes from the code found here: http://wiki.ros.org/tf/Tutorials/Writing%20a%20tf%20broadcaster%20%28C%2B%2B%29
+
+#include <tf/transform_broadcaster.h>
+/* this provides an implementation of TransformBroadcaster to help make the task
+of publishing transforms easier */
+
+sending a transform with a TransformBroadcaster requires four arguments
+1) passing the transform itself
+2) need to give the transform being published a timestamp. Stamping with the current time ros::Time::now()
+3) need to pass the name of the parent frame of the link that we are creating. We are calling the parent frame "world"
+4) need to pass the name of the child frame of the link that we are creating. This is the name of the turtle iself
+
+Note that sendTransform and StampedTransform have opposite ordering of parent and child
+
 
