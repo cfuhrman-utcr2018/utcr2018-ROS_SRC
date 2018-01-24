@@ -26,8 +26,23 @@ int main(int argc, char** argv){
   while (node.ok()){
     tf::StampedTransform transform;
     try{
+    ros::Time now = ros::Time::now();
+/* for the turtle2 to follow the carrot1
       listener.lookupTransform("/turtle2", "/carrot1",
-                               ros::Time(0), transform);
+                               ros::Time(0), transform); */
+  	
+  	listener.waitForTransform("/turtle2", "/turtle1",
+  				now, ros::Duration(3.0));
+/* The waitForTransform function needs four arguments:
+1) wait for the transform from this frame...
+2) and give it to this frame
+3) at this time
+4) the timeout time - dont wait longer that this for the maximum duration
+*/
+  				
+  	listener.lookupTransform("/turtle2", "/turtle1",
+  				now, transform);
+  				
 /* there are four arguments for the main portion of the code
 1) the transform that we wish to give to
 2) the transform that we wish to take from
