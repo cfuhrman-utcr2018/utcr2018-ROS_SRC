@@ -63,16 +63,16 @@ class SubscribeAndPublish
 */	
 		
 		// calculate the velocity based on the direction input (right stick)
-		if ( direction.data > 0.1 ){
-			velocity_L.data = speed.data * (1.0+Turn_Min*direction.data);
-			velocity_R.data = speed.data * (1.0-Turn_Max*direction.data); 
-		} else if ( direction.data < -0.1 ) {
+		if ( direction.data > 0.0 ){
+			velocity_L.data = speed.data * (1.0-Turn_Max*direction.data);
+			velocity_R.data = speed.data * (1.0-Turn_Min*direction.data); 
+		} else if ( direction.data < 0.0 ) {
 			velocity_L.data = speed.data * (1.0+Turn_Min*direction.data);
 			velocity_R.data = speed.data * (1.0+Turn_Max*direction.data);
 		} else {
-			velocity_L.data = 0.0;
-			velocity_R.data = 0.0;
-		}
+			velocity_L.data = speed.data;
+			velocity_R.data = speed.data;
+		} 
 		
 		if ( speed.data > 0.0 ){
 			duty_cycle_L.data = 91.8*velocity_L.data+163.2;
