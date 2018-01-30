@@ -19,19 +19,20 @@ class SubscribeAndPublish
 	public:
 	SubscribeAndPublish()
 
-	{	sub_joy= n.subscribe<sensor_msgs::Joy>("joy", 1, &SubscribeAndPublish::joyCallback, this); // subscribe to the /joy topic
-		pub_DutyCycle= n.advertise<std_msgs::Float64MultiArray>("Duty_Cycle/command", 1); // publish the duty cycle to the arduino
+	{	sub_joy= n.subscribe<sensor_msgs::Joy>("joy", 10, &SubscribeAndPublish::joyCallback, this); // subscribe to the /joy topic
+		pub_DutyCycle_L= n.advertise<std_msgs::Float64>("Duty_Cycle_Left/command", 10); // publish the left motor duty cycle to the arduino
+		pub_DutyCycle_R= n.advertise<std_msgs::Float64>("Duty_Cycle_Right/command", 10); // publish the right motor duty cycle to the arduino
 	}
 	
 	void joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
 	{
 
-		std_msgs::Float64MultiArray velocity; // the speed as a function of direction
+		std_msgs::Float64 velocity_L; // the speed as a function of direction
 			// iniialized to 0 so that the robot will be still initially
-			// structured as (left motor, right motor)
-		std_msgs::Float64MultiArray duty_cycle; // the duty cycle as a function of speed (+ or -) and velocity
+		std_msgs::Float64 velocity_R;
+		std_msgs::Float64 duty_cycle_L; // the duty cycle as a function of speed (+ or -) and velocity
 			// set to 158 so that the motor controllers will keep the wheels stationary
-			// structured as (left motor, right motor)
+		std_msgs::Float64 duty_cycle_R;
 		std_msgs::Float64 speed;
 		std_msgs::Float64 direction;
 		std_msgs::Float64 A;
@@ -39,7 +40,7 @@ class SubscribeAndPublish
 		
 		// initializing the maximum and minimum multipliers for the velocity commands acting on the speed command
 		float Turn_Max = 0.75;
-		float Turn_Min = 1-Turn_Max;
+		float Turn_Min = 1.0-Turn_Max;
 	
 		// initialize the speed and direction from the joystick commands
 		speed.data = joy->axes[1];
@@ -60,32 +61,37 @@ class SubscribeAndPublish
 			goto go_button;
 		}
 */	
+		
 		// calculate the velocity based on the direction input (right stick)
 		if ( direction.data > 0.1 ){
-			velocity.data[0] = speed.data * (1.0+Turn_Min*direction.data);
-			velocity.data[1] = speed.data * (1.0-Turn_Max*direction.data); 
+			velocity_L.data = speed.data * (1.0+Turn_Min*direction.data);
+			velocity_R.data = speed.data * (1.0-Turn_Max*direction.data); 
 		} else if ( direction.data < -0.1 ) {
-			velocity.data[0] = speed.data * (1.0+Turn_Min*direction.data);
-			velocity.data[1] = speed.data * (1.0+Turn_Max*direction.data);
+			velocity_L.data = speed.data * (1.0+Turn_Min*direction.data);
+			velocity_R.data = speed.data * (1.0+Turn_Max*direction.data);
 		} else {
-			velocity.data = {0.0, 0.0};
+			velocity_L.data = 0.0;
+			velocity_R.data = 0.0;
 		}
 		
-		if ( speed.data > 0 ){
-			duty_cycle.data[0] = 91.8*velocity.data[0]+163.2;
-			duty_cycle.data[1] = 91.8*velocity.data[1]+163.2;
+		if ( speed.data > 0.0 ){
+			duty_cycle_L.data = 91.8*velocity_L.data+163.2;
+			duty_cycle_R.data = 91.8*velocity_R.data+163.2;
 		} else {
-			duty_cycle.data[0] = 153.0*velocity.data[0]+153.0;
-			duty_cycle.data[1] = 153.0*velocity.data[1]+153.0;
+			duty_cycle_L.data = 153.0*velocity_L.data+153.0;
+			duty_cycle_R.data = 153.0*velocity_R.data+153.0;
 		}
 		
-		pub_DutyCycle.publish(duty_cycle);
+		pub_DutyCycle_L.publish(duty_cycle_L);
+		pub_DutyCycle_R.publish(duty_cycle_R);
+		
 	}
 
 	private:
 	
 	ros::NodeHandle n;
-	ros::Publisher pub_DutyCycle;
+	ros::Publisher pub_DutyCycle_L;
+	ros::Publisher pub_DutyCycle_R;
 	ros::Subscriber sub_joy;
 
 };
