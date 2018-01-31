@@ -2,12 +2,8 @@
 
 #include "ros/ros.h"
 #include "std_msgs/Float64.h"
+#include <std_msgs/UInt16.h>
 #include <sensor_msgs/Joy.h>
-#include <std_msgs/Float64MultiArray.h>
-//#include "std_msgs/MultiArrayLayout.h"
-//#include "std_msgs/MultiArrayDimension.h"
-//#include "std_msgs/Float64MultiArray.h"
-//#include "std_msgs/Int32MultiArray.h"
 
 
 #include <array>
@@ -20,8 +16,8 @@ class SubscribeAndPublish
 	SubscribeAndPublish()
 
 	{	sub_joy= n.subscribe<sensor_msgs::Joy>("joy", 10, &SubscribeAndPublish::joyCallback, this); // subscribe to the /joy topic
-		pub_DutyCycle_L= n.advertise<std_msgs::Float64>("Duty_Cycle_Left/command", 10); // publish the left motor duty cycle to the arduino
-		pub_DutyCycle_R= n.advertise<std_msgs::Float64>("Duty_Cycle_Right/command", 10); // publish the right motor duty cycle to the arduino
+		pub_DutyCycle_L= n.advertise<std_msgs::UInt16>("Duty_Cycle_Left/command", 10); // publish the left motor duty cycle to the arduino
+		pub_DutyCycle_R= n.advertise<std_msgs::UInt16>("Duty_Cycle_Right/command", 10); // publish the right motor duty cycle to the arduino
 	}
 	
 	void joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
@@ -30,9 +26,9 @@ class SubscribeAndPublish
 		std_msgs::Float64 velocity_L; // the speed as a function of direction
 			// iniialized to 0 so that the robot will be still initially
 		std_msgs::Float64 velocity_R;
-		std_msgs::Float64 duty_cycle_L; // the duty cycle as a function of speed (+ or -) and velocity
+		std_msgs::UInt16 duty_cycle_L; // the duty cycle as a function of speed (+ or -) and velocity
 			// set to 158 so that the motor controllers will keep the wheels stationary
-		std_msgs::Float64 duty_cycle_R;
+		std_msgs::UInt16 duty_cycle_R;
 		std_msgs::Float64 speed;
 		std_msgs::Float64 direction;
 		std_msgs::Float64 A;
