@@ -1,7 +1,11 @@
 #include <ros/ros.h>
 #include <geometry_msgs/PointStamped.h>
 #include <tf/transform_listener.h>
+// needed to create a listener object. Automatically subscribes to the transform message
+// topic over ROS and manages all incoming data
 
+// creating a function that, given a TransformListener, takes a point in the "base_laser" frame and transforms
+// it to the "base_link" frame
 void transformPoint(const tf::TransformListener& listener){
   //we'll create a point in the base_laser frame that we'd like to transform to the base_link frame
   geometry_msgs::PointStamped laser_point;
