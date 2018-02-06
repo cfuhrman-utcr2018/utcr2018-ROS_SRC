@@ -2,9 +2,9 @@
 #include <tf/transform_broadcaster.h>
 // this package provides the tf::TransformBroadcaster.
 
-double x = 0.1; // offset in the x direction
-double y = 0.0; // offset in the y direction
-double z = 0.2; // offset in the z direction
+double x = 0.1; // offset in the x direction [in meters]
+double y = 0.0; // offset in the y direction [in meters]
+double z = 0.2; // offset in the z direction [in meters]
 
 int main(int argc, char** argv){
   ros::init(argc, argv, "robot_tf_publisher");
