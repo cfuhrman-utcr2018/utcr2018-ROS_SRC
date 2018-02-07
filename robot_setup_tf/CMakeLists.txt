@@ -200,5 +200,7 @@ include_directories(
 
 add_executable(tf_broadcaster src/tf_broadcaster.cpp)
 add_executable(tf_listener src/tf_listener.cpp)
+add_executable(odom_broadcast src/odom_broadcaster.cpp) # Added by C. Fuhrman
 target_link_libraries(tf_broadcaster ${catkin_LIBRARIES})
 target_link_libraries(tf_listener ${catkin_LIBRARIES})
+target_link_libraries(odom_broadcast ${catkin_LIBRARIES}) # Added by C. Fuhrman
