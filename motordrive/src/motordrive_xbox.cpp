@@ -4,7 +4,7 @@ joy_node
 rosserial_arduino node
 Xbox 360 controller
 Arduino
-Motor Controllers (NAME???)
+Motor Controllers Victor 884
 ================================================================================================================
 Author: Connor Fuhrman
 Contact: 512-897-0709

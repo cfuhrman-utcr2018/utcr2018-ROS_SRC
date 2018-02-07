@@ -4,12 +4,12 @@
 // needed to create a listener object. Automatically subscribes to the transform message
 // topic over ROS and manages all incoming data
 
-// creating a function that, given a TransformListener, takes a point in the "base_laser" frame and transforms
+// creating a function that, given a TransformListener, takes a point in the "laser" frame and transforms
 // it to the "base_link" frame
 void transformPoint(const tf::TransformListener& listener){
-  //we'll create a point in the base_laser frame that we'd like to transform to the base_link frame
+  //we'll create a point in the laser frame that we'd like to transform to the base_link frame
   geometry_msgs::PointStamped laser_point;
-  laser_point.header.frame_id = "base_laser";
+  laser_point.header.frame_id = "laser";
 
   //we'll just use the most recent transform available for our simple example
   laser_point.header.stamp = ros::Time();
@@ -23,7 +23,7 @@ void transformPoint(const tf::TransformListener& listener){
     geometry_msgs::PointStamped base_point;
     listener.transformPoint("base_link", laser_point, base_point);
 
-    ROS_INFO("base_laser: (%.2f, %.2f. %.2f) -----> base_link: (%.2f, %.2f, %.2f) at time %.2f",
+    ROS_INFO("laser: (%.2f, %.2f. %.2f) -----> base_link: (%.2f, %.2f, %.2f) at time %.2f",
         laser_point.point.x, laser_point.point.y, laser_point.point.z,
         base_point.point.x, base_point.point.y, base_point.point.z, base_point.header.stamp.toSec());
   }
