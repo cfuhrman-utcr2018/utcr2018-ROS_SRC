@@ -201,3 +201,7 @@ include_directories(
 add_executable(xboxdrive src/motordrive_xbox.cpp)
 target_link_libraries(xboxdrive ${catkin_LIBRARIES})
 
+add_executable(twist_to_PWM src/navdrive.cpp)
+target_link_libraries(twist_to_PWM ${catkin_LIBRARIES})
+
+
