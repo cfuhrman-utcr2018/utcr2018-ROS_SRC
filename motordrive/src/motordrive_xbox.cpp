@@ -85,9 +85,9 @@ class SubscribeAndPublish
 
 	{	sub_joy= n.subscribe<sensor_msgs::Joy>("joy", 10, &SubscribeAndPublish::joyCallback, this);
 	// subscribe to the /joy topic
-		pub_DutyCycle_L= n.advertise<std_msgs::UInt16>("Duty_Cycle_Left/command", 10);
+		pub_DutyCycle_L= n.advertise<std_msgs::UInt16>("Duty_Cycle_Left", 10);
 		// publish the left motor duty cycle to the arduino
-		pub_DutyCycle_R= n.advertise<std_msgs::UInt16>("Duty_Cycle_Right/command", 10);
+		pub_DutyCycle_R= n.advertise<std_msgs::UInt16>("Duty_Cycle_Right", 10);
 		// publish the right motor duty cycle to the arduino
 	}
 
