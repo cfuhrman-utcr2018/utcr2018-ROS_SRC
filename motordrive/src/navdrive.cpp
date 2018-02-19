@@ -1,3 +1,12 @@
+/*
+ * Author: Connor Fuhrman
+ * Date: 2/19/2018
+ * Purpose: This code will interface with the ROS Navigation Stack. It will send commands to
+ * the Arduino.
+ *
+ * Input: /cmd_vel topic consisting of
+ */
+
 /* Pseduocode:
 
 subscribe to cmd_vel
@@ -39,29 +48,29 @@ using namespace geometry_msgs;
 using namespace std;
 
 
-	void callback (const Twist& vel_msg)
-	{
-			publish = 1; // only if a new message is recieved will the node publish
-			// data to the topics Duty_Cycle_Left and Duty_Cycle_Right
-			vx = vel_msg.linear.x;
-			wz = vel_msg.angular.z;
-			ROS_INFO("I Heard: [%f, %f]", vx, wz);
-			cout << "Twist Recieved" << endl;
+void callback (const Twist& vel_msg)
+{
+        publish = 1; // only if a new message is recieved will the node publish
+        // data to the topics Duty_Cycle_Left and Duty_Cycle_Right
+        vx = vel_msg.linear.x;
+        wz = vel_msg.angular.z;
+        ROS_INFO("I Heard: [%f, %f]", vx, wz);
+        cout << "Twist Recieved" << endl;
 
-			vr = vx + wz*L/2;
-			vl = vx - wz*L/2;
+        vr = vx + wz*L/2;
+        vl = vx - wz*L/2;
 
-			D_right.data = (D_max_foward - D_min_foward) * vr / robot_max + D_min_foward;
-			D_left.data = (D_max_foward - D_min_foward) * vl / robot_max + D_min_foward;
+        D_right.data = (D_max_foward - D_min_foward) * vr / robot_max + D_min_foward;
+        D_left.data = (D_max_foward - D_min_foward) * vl / robot_max + D_min_foward;
 
-	}
+}
 
 
 int main( int argc, char *argv[] )
 {
 	init(argc, argv, "Cmd_vel_to_Duty");
 
-	NodeHandle n;
+    NodeHandle n;
 
 	Subscriber Velocity_Commands = n.subscribe("/cmd_vel", 10, callback);
 		// subscribing to the Nav Stack velocity commands
@@ -76,6 +85,7 @@ int main( int argc, char *argv[] )
 			Right_Duty.publish(D_right);
 			publish = 0;
 		}
+
 		spinOnce();
 	}
 

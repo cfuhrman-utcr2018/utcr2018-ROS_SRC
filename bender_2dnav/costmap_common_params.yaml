@@ -1,0 +1,10 @@
+obstacle_range: 0.5 # the maximum distance without updating the costmap
+raytrace_range: 3.0 # the range to which
+footprint: [[-0.40 0.445], [0.40 0.445], [0.40 -0.445], [-0.40 -0.445]] # simple box configuration
+#robot_radius: ir_of_robot
+inflation_radius: 0.10 # 10 centemeters away from the robot - minimum distance away from an obsticle
+
+observation_sources: laser_scan_sensor
+
+laser_scan_sensor: {sensor_frame: laser, data_type: LaserScan, topic: /scan, marking: true, clearing: true}
+# marking is adding new things to the costmap. Clearing is clearing obsticles from the costmap
