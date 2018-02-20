@@ -3,8 +3,6 @@ publish_rate: 50
 
 left_wheel: ['left_wheel_joint']
 right_wheel: ['right_wheel_joint']
-front_wheel: ['front_wheel_joint']
-back_wheel: ['back_wheel_joint']
 
 wheel_separation: 0.44
 
@@ -21,7 +19,7 @@ base_frame_id: base_link
 linear:
   x:
     has_velocity_limits    : true
-    max_velocity           : 0.2   # m/s
+    max_velocity           : 5.0   # m/s
     has_acceleration_limits: true
     max_acceleration       : 0.6   # m/s^2
 angular:
