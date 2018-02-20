@@ -1,0 +1,8 @@
+digraph G {
+node [shape=box];
+"base_link" [label="base_link"];
+"front_wheel" [label="front_wheel"];
+node [shape=ellipse, color=blue, fontcolor=blue];
+"base_link" -> "base_to_front_wheel" [label="xyz: 0.445 0 0.2 \nrpy: 0 -0 0"]
+"base_to_front_wheel" -> "front_wheel"
+}
