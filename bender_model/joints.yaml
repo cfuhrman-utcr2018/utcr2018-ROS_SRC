@@ -1,0 +1,5 @@
+# specifying what ROS code we want to pass to the Gazebo simulator
+# they are initially loaded into the ROS parameter space
+
+type: "joint_state_controller/JointStateController"
+publish_rate: 50
