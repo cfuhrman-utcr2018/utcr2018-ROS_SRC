@@ -1,6 +1,6 @@
 <launch>
 
-    <arg name="model" default="$(find bender_model)/model.urdf"/>
+    <arg name="model" default="$(find bender_model)/model.urdf.xacro"/>
     <arg name="gui" default="false" />
     <arg name="rvizconfig" default="$(find bender_model)/urdf.rviz"/>
 
@@ -12,16 +12,15 @@
 
     <rosparam command="load"
               file="$(find bender_model)/joints.yaml"
-    ns="bender_joint_state_controller" />
+              ns="bender_joint_state_controller" />
 
     <rosparam command="load"
               file="$(find bender_model)/diffdrive.yaml"
-    ns="bender_diff_drive_controller" />
+              ns="bender_diff_drive_controller" />
 
     <node name="bender_controller_spawner" pkg="controller_manager" type="spawner"
-      args="bender_joint_state_controller
-            bender_diff_drive_controller
-            --shutdown-timeout 3"/>
+        output="screen" args="bender_joint_state_controller
+                              bender_diff_drive_controller"/>
 
     <node name="rqt_robot_steering" pkg="rqt_robot_steering" type="rqt_robot_steering">
       <param name="default_topic" value="/bender_diff_drive_controller/cmd_vel"/>
