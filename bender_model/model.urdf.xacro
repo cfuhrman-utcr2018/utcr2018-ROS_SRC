@@ -37,7 +37,7 @@
               <box size="${base_len} ${base_wid} ${base_height}"/>
             </geometry>
         </collision>
-        <xacro:default_inertial mass="1"/>
+        <xacro:default_inertial mass="10"/>
     </link>
 
     <xacro:macro name="front_wheel" params="position orient reflect">
@@ -59,7 +59,7 @@
                   <cylinder length = "${wheel_length}" radius="${wheel_radius}"/>
                 </geometry>
             </collision>
-            <xacro:default_inertial mass="0.5"/>
+            <xacro:default_inertial mass="5"/>
         </link>
 
 <!-- This block provides the simulator (Gazebo) with information on a few additional
@@ -105,7 +105,7 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
                   <cylinder length = "${wheel_length}" radius="${wheel_radius}"/>
                 </geometry>
             </collision>
-            <xacro:default_inertial mass="0.5"/>
+            <xacro:default_inertial mass="5"/>
         </link>
 
     <!-- This block provides the simulator (Gazebo) with information on a few additional
@@ -148,7 +148,21 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
       </plugin>
     </gazebo>
 
-
+    <gazebo>
+      <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>${update_rate}</updateRate>
+        <leftJoint>right_back_wheel_joint</leftJoint>
+        <rightJoint>left_back_wheel_joint</rightJoint>
+        <wheelSeparation>0.5380</wheelSeparation>
+        <wheelDiameter>0.2410</wheelDiameter>
+        <torque>20</torque>
+        <commandTopic>cmd_vel</commandTopic>
+        <odometryTopic>odom</odometryTopic>
+        <odometryFrame>odom</odometryFrame>
+        <robotBaseFrame>base_link</robotBaseFrame>
+      </plugin>
+    </gazebo>
 
 <!-- Hokuyo Laser Senso -->
     <link name="hokuyo_link">
