@@ -40,48 +40,14 @@
         <xacro:default_inertial mass="1"/>
     </link>
 
-
-    <xacro:macro name="caster" params="position reflect">
-        <joint name="${position}_wheel_joint" type="fixed">
+    <xacro:macro name="front_wheel" params="position orient reflect">
+        <joint name="${position}_${orient}_wheel_joint" type="continuous">
             <parent link="base_link"/>
-            <child link="${position}_wheel"/>
+            <child link="${position}_${orient}_wheel"/>
             <axis xyz="0 0 1"/>
-            <origin xyz="${reflect*(base_wid/2)} 0 ${-1 * base_height}" rpy="${pi/2} 0 0"/>
+            <origin xyz="${base_len/2.5} ${reflect*(base_wid/2)} ${-1*base_height}" rpy="${-pi/2} 0 0"/>
         </joint>
-        <link name="${position}_wheel">
-            <visual>
-                <geometry>
-                    <sphere radius="${caster_radius}"/>
-                </geometry>
-                <material name="white"/>
-            </visual>
-            <collision>
-                <geometry>
-                  <sphere radius="${caster_radius}"/>
-                </geometry>
-            </collision>
-            <xacro:default_inertial mass="0.5"/>
-        </link>
-
-<!-- This block provides the simulator (Gazebo) with information on a few additional
-physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more-->
-        <gazebo reference="${position}_wheel">
-            <mu1 value = "0.0"/>
-            <mu2 value = "0.0"/>
-            <kp  value = "10000000.0"/>
-            <kd  value = "1.0"/>
-            <material>Gazebo/Grey/</material>
-        </gazebo>
-    </xacro:macro>
-
-    <xacro:macro name="wheel" params="position reflect">
-        <joint name="${position}_wheel_joint" type="continuous">
-            <parent link="base_link"/>
-            <child link="${position}_wheel"/>
-            <axis xyz="0 0 1"/>
-            <origin xyz="0 ${reflect*(base_wid/2)} ${-1*base_height}" rpy="${-pi/2} 0 0"/>
-        </joint>
-        <link name="${position}_wheel">
+        <link name="${position}_${orient}_wheel">
             <visual>
                 <geometry>
                     <cylinder length = "${wheel_length}" radius="${wheel_radius}"/>
@@ -98,7 +64,7 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
 
 <!-- This block provides the simulator (Gazebo) with information on a few additional
 physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more-->
-        <gazebo reference="${position}_wheel">
+        <gazebo reference="${position}_${orient}_wheel">
             <mu1 value = "200.0"/>
             <mu2 value = "100.0"/>
             <kp value="1000000.0" />
@@ -109,21 +75,67 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
 
 <!-- This block connects the wheel joint to an actuator (motor), which informs both
    simulation and visualization of the robot -->
-       <transmission name="${position}_wheel_trans">
+       <transmission name="${position}_${orient}_wheel_trans">
         <type>transmission_interface/SimpleTransmission</type>
-             <actuator name="${position}_wheel_motor">
+             <actuator name="${position}_${orient}_wheel_motor">
                   <mechanicalReduction>1</mechanicalReduction>
              </actuator>
-         <joint name="${position}_wheel_joint">
+         <joint name="${position}_${orient}_wheel_joint">
               <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
          </joint>
         </transmission>
     </xacro:macro>
 
-    <xacro:caster position="front" reflect="1"/>
-    <xacro:caster position="back"  reflect="-1"/>
-    <xacro:wheel  position="right" reflect="1"/>
-    <xacro:wheel  position="left"  reflect="-1"/>
+    <xacro:macro name="back_wheel" params="position orient reflect">
+        <joint name="${position}_${orient}_wheel_joint" type="continuous">
+            <parent link="base_link"/>
+            <child link="${position}_${orient}_wheel"/>
+            <axis xyz="0 0 1"/>
+            <origin xyz="${-base_len/2.5} ${reflect*(base_wid/2)} ${-1*base_height}" rpy="${-pi/2} 0 0"/>
+        </joint>
+        <link name="${position}_${orient}_wheel">
+            <visual>
+                <geometry>
+                    <cylinder length = "${wheel_length}" radius="${wheel_radius}"/>
+                </geometry>
+                <material name="white"/>
+            </visual>
+            <collision>
+                <geometry>
+                  <cylinder length = "${wheel_length}" radius="${wheel_radius}"/>
+                </geometry>
+            </collision>
+            <xacro:default_inertial mass="0.5"/>
+        </link>
+
+    <!-- This block provides the simulator (Gazebo) with information on a few additional
+    physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more-->
+        <gazebo reference="${position}_${orient}_wheel">
+            <mu1 value = "200.0"/>
+            <mu2 value = "100.0"/>
+            <kp value="1000000.0" />
+            <kd value="1.0" />
+            <fdir1 value="1 0 0"/>
+            <material>Gazebo/Grey/</material>
+        </gazebo>
+
+    <!-- This block connects the wheel joint to an actuator (motor), which informs both
+    simulation and visualization of the robot -->
+       <transmission name="${position}_${orient}_wheel_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+             <actuator name="${position}_${orient}_wheel_motor">
+                  <mechanicalReduction>1</mechanicalReduction>
+             </actuator>
+         <joint name="${position}_${orient}_wheel_joint">
+              <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+         </joint>
+        </transmission>
+    </xacro:macro>
+
+    <xacro:front_wheel   orient="front" position="right" reflect="1"/>
+    <xacro:front_wheel    orient="front" position="left" reflect="-1"/>
+    <xacro:back_wheel   orient="back" position="right" reflect="1"/>
+    <xacro:back_wheel    orient="back" position="left" reflect="-1"/>
 
 
  <!-- Gazebo plugin for ROS Control -->
@@ -131,6 +143,8 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
     <gazebo>
       <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
         <robotNamespace>/</robotNamespace>
+
+        <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
       </plugin>
     </gazebo>
 
