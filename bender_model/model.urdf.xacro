@@ -120,6 +120,8 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
         </transmission>
     </xacro:macro>
 
+<!-- Creating the actual robot -->
+
     <xacro:caster position="front" reflect="1"/>
     <xacro:caster position="back"  reflect="-1"/>
     <xacro:wheel  position="right" reflect="1"/>
@@ -133,8 +135,6 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
         <robotNamespace>/</robotNamespace>
       </plugin>
     </gazebo>
-
-
 
 <!-- Hokuyo Laser Senso -->
     <link name="hokuyo_link">
