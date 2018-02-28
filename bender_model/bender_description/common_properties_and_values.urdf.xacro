@@ -1,0 +1,101 @@
+<?xml version="1.0" ?>
+<!--
+    Various Useful properties such as constants and materials
+
+    Contains:
+        - Pi
+        - Colors
+            - White
+            - Grey
+            - Light Grey
+            - Dark Grey
+            - Black
+            - Red
+            - Green
+            - Blue
+            - Grey Blue
+            - Orange
+-->
+
+
+<!--
+====================================================================
+    Note that code taken from ROS Robotics Projects Chapter 9 code
+    under the OS Liscence. Code modified as needed by C. Fuhrman
+    for use in bender_model package
+====================================================================
+-->
+
+
+<robot name="xacro_properties" xmlns:xacro="http://ros.org/wiki/xacro">
+<!-- useful constants
+////////////////////////////////////////////////////////////////////
+-->
+  <xacro:property name="M_PI" value="3.1415926535897931" />
+
+<!-- Bender dimensions
+////////////////////////////////////////////////////////////////////
+-->
+  <xacro:property name="base_len" value="0.89" />
+  <xacro:property name="base_wid" value="0.80" />
+  <xacro:property name="base_height" value="0.20" />
+  <xacro:property name="caster_radius" value="0.15" />
+  <xacro:property name="wheel_length" value="0.10" />
+  <xacro:property name="wheel_radius" value="0.15" />
+  <xacro:property name="update_rate" value="50"/>
+  <xacro:property name="hokuyo_size" value="0.05"/>
+
+<!-- Begin Colors:
+/////////////////////////////////////////////////////////////////////
+-->
+  <xacro:property name="material_white">
+    <material name="white">
+      <color rgba="1 1 1 1"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_grey">
+    <material name="grey">
+      <color rgba="0.5 0.5 0.5 1"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_light_grey">
+    <material name="light_grey">
+      <color rgba="0.6 0.6 0.6 1"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_dark_grey">
+    <material name="dark_grey">
+      <color rgba="0.3 0.3 0.3 1"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_black">
+    <material name="black">
+      <color rgba="0.1 0.1 0.1 1"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_red">
+    <material name="red">
+      <color rgba="1 0 0 1"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_green">
+    <material name="green">
+      <color rgba="0.0 0.8 0.0 1"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_blue">
+    <material name="blue">
+      <color rgba="0.0 0.0 1.0 1"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_grey_blue">
+    <material name="grey_blue">
+      <color rgba="0.4 0.4 1.0 1"/>
+    </material>
+  </xacro:property>
+  <xacro:property name="material_orange">
+    <material name="orange">
+      <color rgba="1.0 0.7 0.0 1"/>
+    </material>
+  </xacro:property>
+</robot>

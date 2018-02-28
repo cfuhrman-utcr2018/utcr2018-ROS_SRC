@@ -9,6 +9,7 @@ project(bender_model)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roslaunch
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
