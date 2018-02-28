@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <!--
 =========================================================
     Code taken from ROS Robotics Project Chapter 9 code
@@ -5,7 +6,7 @@
 =========================================================
 -->
 
-<?xml version="1.0"?>
+
 <robot>
   <!--
     These properties must be observed by any machine

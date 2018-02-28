@@ -1,3 +1,15 @@
+<!--
+///////////////////////////////////////////////////////////////////////////////////
+Author: Connor Fuhrman
+Contact: cfuhrman at citadel dot edu
+Contact 2: connorfuhrman at outlook dot com
+///////////////////////////////////////////////////////////////////////////////////
+
+This code launches the Gazebo model for the bender robot simulation to be used
+for The Citadel's entry to the 2018 IGVC.
+-->
+
+<!-- Rev A commented out
 <launch>
 
     <arg name="model" default="$(find bender_model)/model.urdf.xacro"/>
@@ -20,14 +32,64 @@
 
     <node name="bender_controller_spawner" pkg="controller_manager" type="spawner"
         output="screen" args="bender_joint_state_controller
-                              bender_diff_drive_controller"/>
+                              bender_diff_drive_controller"/> -->
 
-    <!--node name="rqt_robot_steering" pkg="rqt_robot_steering" type="rqt_robot_steering">
+    <!-- Can be used to steer the robot. Keyboard teleoperation is much better
+
+      <node name="rqt_robot_steering" pkg="rqt_robot_steering" type="rqt_robot_steering">
       <param name="default_topic" value="/bender_diff_drive_controller/cmd_vel"/>
-    </node-->
-
+    </node>
+    -->
+<!--
     <node name="teleop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen">
         <remap from="cmd_vel" to="/bender_diff_drive_controller/cmd_vel"/>
     </node>
+
+</launch>
+-->
+
+<!-- Begin Rev B -->
+<launch>
+    <!-- Defines parameters -->
+    <arg name="base"       value="$(optenv BENDER_BASE bender_base)"/>
+    <arg name="model"      default="$(find bender_model)/bender_description/bender_base.urdf"/>
+    <arg name="gui"        default="true" />
+    <arg name="rvizconfig" default="$(find bender_model)/bender_visual.rviz"/>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+    <arg name="paused" default="false"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="headless" default="false"/>
+    <arg name="debug" default="false"/>
+
+    <!-- Begins launching the gazebo simulator -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <arg name="world_name" value="$(find bender_model)/bender_worlds/cones.world"/>
+      <arg name="debug" value="$(arg debug)" />
+      <arg name="gui" value="$(arg gui)" />
+      <arg name="paused" value="$(arg paused)"/>
+      <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+      <arg name="headless" value="$(arg headless)"/>
+    </include>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////// -->
+    <!-- Calling another launch file -> modified from ROS Robotics Projects by C. Fuhrman -->
+    <include file="$(find bender_model)/bender_generate/$(arg base).launch.xml">
+        <arg name="base" value="$(arg base)"/>
+    </include>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////// -->
+    <!-- Launching the robot_state_publisher node. This is required for Gazebo simulation -->
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+      <param name="publish_frequency" type="double" value="30.0" />
+    </node>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////// -->
+    <!-- Launching rviz with the correct configuration file -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////// -->
 
 </launch>

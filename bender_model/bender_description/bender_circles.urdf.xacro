@@ -1,0 +1,17 @@
+<?xml version="1.0?>
+<!--
+Adapted from ROS Robotics Projects by C. Fuhrman
+    - Base : kobuki
+-->
+
+<robot name="turtlebot" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- <xacro:include filename="$(find chefbot_description)/urdf/chefbot_library.urdf.xacro" /> -->
+  <xacro:include filename="$(find bender_model)/bender_description/bender_library.urdf.xacro"/>
+
+  <kobuki/>
+  <!-- Do not think that I need this here. No kinect sensor and idk what a stack_hazagon is
+  <stack_hexagons parent="base_link"/>
+  <sensor_kinect  parent="base_link"/>
+  -->
+</robot>

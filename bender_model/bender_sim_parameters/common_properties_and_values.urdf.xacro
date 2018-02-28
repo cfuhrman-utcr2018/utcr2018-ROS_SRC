@@ -45,6 +45,17 @@
   <xacro:property name="update_rate" value="50"/>
   <xacro:property name="hokuyo_size" value="0.05"/>
 
+<!-- Default Inertial Values for Bender
+///////////////////////////////////////////////////////////////////
+-->
+<xacro:macro name="default_inertial" params="mass">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+</xacro:macro>
+
 <!-- Begin Colors:
 /////////////////////////////////////////////////////////////////////
 -->
