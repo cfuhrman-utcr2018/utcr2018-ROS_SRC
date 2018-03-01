@@ -144,8 +144,8 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
 
     <xacro:caster position="front" reflect="1"/>
     <xacro:caster position="back"  reflect="-1"/>
-    <xacro:wheel  position="right" reflect="1"/>
-    <xacro:wheel  position="left"  reflect="-1"/>
+    <xacro:wheel  position="right" reflect="-1"/>
+    <xacro:wheel  position="left"  reflect="1"/>
 
 
  <!-- Gazebo plugin for ROS Control -->

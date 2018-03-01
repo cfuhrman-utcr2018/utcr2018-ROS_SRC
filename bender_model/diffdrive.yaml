@@ -8,8 +8,8 @@ right_wheel: ['right_wheel_joint']
 # Odometry covariances for the encoder output of the robot. These values should
 # be tuned to your robot's sample odometry data, but these values are a good place
 # to start
-pose_covariance_diagonal : [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
-twist_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
+pose_covariance_diagonal : [0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
+twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
 
 # Wheel separation and radius multipliers
 wheel_separation_multiplier: 1.0 # default: 1.0
@@ -32,8 +32,8 @@ linear:
 angular:
   z:
     has_velocity_limits    : true
-    max_velocity           : 1.0   # rad/s
+    max_velocity           : 0.25   # rad/s
     has_acceleration_limits: true
-    max_acceleration       : 0.5 # rad/s^2
+    max_acceleration       : 1.0 # rad/s^2
     has_jerk_limits        : true
     max_jerk               : 2.5  # rad/s^3
