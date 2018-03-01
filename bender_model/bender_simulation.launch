@@ -26,8 +26,8 @@
       <param name="default_topic" value="/bender_diff_drive_controller/cmd_vel"/>
     </node-->
 
-    <node name="teleop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen">
+<!--    <node name="teleop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen">
         <remap from="cmd_vel" to="/bender_diff_drive_controller/cmd_vel"/>
-    </node>
+    </node> -->
 
 </launch>
