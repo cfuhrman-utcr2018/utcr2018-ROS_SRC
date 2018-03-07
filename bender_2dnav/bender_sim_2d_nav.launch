@@ -5,4 +5,7 @@
         <arg name="gui" default="false" />
         <arg name="rvizconfig" default="$(find bender_model)/urdf.rviz"/>
     </include>
+
+    <include file="$(find bender_2dnav)/move_base.launch">
+
 </launch>

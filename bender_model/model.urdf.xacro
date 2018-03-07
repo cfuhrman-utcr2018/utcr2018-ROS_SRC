@@ -12,6 +12,8 @@
     <xacro:property name="update_rate" value="50"/>
     <xacro:property name="hokuyo_size" value="0.05"/>
 
+    <!--robotBaseFrame>base_link</robotBaseFrame-->
+
     <xacro:macro name="default_inertial" params="mass">
         <inertial>
           <mass value="${mass}" />
@@ -163,7 +165,7 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
         <geometry>
           <box size="${hokuyo_size} ${hokuyo_size} ${1.5*hokuyo_size}"/>
         </geometry>
-        <material name="Blue" />
+        <!--material name="Blue" /-->
       </visual>
     </link>
     <joint name="hokuyo_joint" type="fixed">
@@ -176,12 +178,13 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
       <turnGravityOff>false</turnGravityOff>
       <sensor type="ray" name="head_hokuyo_sensor">
         <pose>${hokuyo_size/2} 0 0 0 0 0</pose>
-        <visualize>false</visualize>
+        <!--visualize>false</visualize-->
+        <visualize>true</visualize>
         <update_rate>40</update_rate>
         <ray>
           <scan>
             <horizontal>
-              <samples>720</samples>
+              <samples>32</samples>
               <resolution>1</resolution>
               <min_angle>-1.570796</min_angle>
               <max_angle>1.570796</max_angle>
@@ -194,7 +197,7 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
           </range>
         </ray>
         <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
-          <topicName>/scan</topicName>
+          <topicName>scan</topicName>
           <frameName>hokuyo_link</frameName>
         </plugin>
       </sensor>
