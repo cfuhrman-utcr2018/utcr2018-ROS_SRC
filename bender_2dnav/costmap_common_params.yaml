@@ -4,7 +4,10 @@ footprint: [[-0.40, 0.445], [0.40, 0.445], [0.40, -0.445], [-0.40, -0.445]] # si
 #robot_radius: ir_of_robot
 inflation_radius: 0.10 # 10 centemeters away from the robot - minimum distance away from an obsticle
 
-observation_sources: laser_scan_sensor
+# observation_sources: laser_scan_sensor
+observation_sources: scan
 
-laser_scan_sensor: {sensor_frame: laser, data_type: LaserScan, topic: scan, marking: true, clearing: true}
+# laser_scan_sensor: {sensor_frame: laser, data_type: LaserScan, topic: scan, marking: true, clearing: true}
 # marking is adding new things to the costmap. Clearing is clearing obsticles from the costmap
+scan: {data_type: LaserScan, topic: /testingwhydoesthisnotwork, marking: true, clearing: true, min_obstacle_height: 0.0, max_obstacle_height: 3}
+# ^^ why is this not changing? I need to get the ACML to to scubscribe to /scan topic!!
