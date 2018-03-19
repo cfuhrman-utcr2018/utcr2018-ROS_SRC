@@ -9,5 +9,4 @@ observation_sources: scan
 
 # laser_scan_sensor: {sensor_frame: laser, data_type: LaserScan, topic: scan, marking: true, clearing: true}
 # marking is adding new things to the costmap. Clearing is clearing obsticles from the costmap
-scan: {data_type: LaserScan, topic: /testingwhydoesthisnotwork, marking: true, clearing: true, min_obstacle_height: 0.0, max_obstacle_height: 3}
-# ^^ why is this not changing? I need to get the ACML to to scubscribe to /scan topic!!
+scan: {data_type: LaserScan, topic: scan, marking: true, clearing: true, min_obstacle_height: 0.0, max_obstacle_height: 3}
