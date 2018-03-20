@@ -39,7 +39,7 @@
               <box size="${base_len} ${base_wid} ${base_height}"/>
             </geometry>
         </collision>
-        <xacro:default_inertial mass="1"/>
+        <xacro:default_inertial mass="15.0"/>
     </link>
 <!--
     <joint name="base_footprint_joint" type="fixed">
@@ -82,7 +82,7 @@
                   <sphere radius="${caster_radius}"/>
                 </geometry>
             </collision>
-            <xacro:default_inertial mass="0.5"/>
+            <xacro:default_inertial mass="2.5"/>
         </link>
 
 <!-- This block provides the simulator (Gazebo) with information on a few additional
@@ -115,7 +115,7 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
                   <cylinder length = "${wheel_length}" radius="${wheel_radius}"/>
                 </geometry>
             </collision>
-            <xacro:default_inertial mass="0.5"/>
+            <xacro:default_inertial mass="3.5"/>
         </link>
 
 <!-- This block provides the simulator (Gazebo) with information on a few additional
