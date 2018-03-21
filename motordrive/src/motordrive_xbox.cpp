@@ -75,7 +75,7 @@ Duty_Cycle_Right to the Arduino thorugh the rosserial_arduino node.
 #include <sensor_msgs/Joy.h>
 
 
-int Start = 0; // the emergency stop button
+std_msgs::UInt16 Start; // the emergency stop button
 
 class SubscribeAndPublish
 {
@@ -89,6 +89,8 @@ class SubscribeAndPublish
 		// publish the left motor duty cycle to the arduino
 		pub_DutyCycle_R= n.advertise<std_msgs::UInt16>("Duty_Cycle_Right", 10);
 		// publish the right motor duty cycle to the arduino
+        light = n.advertise<std_msgs::UInt16>("Light",10);
+        // publish the information as to what light should be on
 	}
 
 	void joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
@@ -124,15 +126,15 @@ class SubscribeAndPublish
 
 
 		if ( A.data > 0.9 ){
-			Start = 1;
+            Start.data = 1;
 		}
 
-		if ( Start == 1){
+        if ( Start.data == 1){
 		// invariant is the Start variable. Exit the while loop by
 		// pressing B
 
 			if ( B.data > 0.9){
-			 	Start = 0;
+                Start.data = 0;
 			 }
 
 			// calculate the velocity based on the direction input (right stick)
@@ -158,6 +160,7 @@ class SubscribeAndPublish
 			// Publish the left and right duty cycle
 			pub_DutyCycle_L.publish(duty_cycle_L);
 			pub_DutyCycle_R.publish(duty_cycle_R);
+            light.publish(Start);
 
 		} else {
 		// if we are not moving, the duty should be 154
@@ -167,6 +170,7 @@ class SubscribeAndPublish
 		// Publish the left and right duty cycle
 		pub_DutyCycle_L.publish(duty_cycle_L);
 		pub_DutyCycle_R.publish(duty_cycle_R);
+        light.publish(Start);
 
 		}
 
@@ -177,6 +181,7 @@ class SubscribeAndPublish
 	ros::NodeHandle n;
 	ros::Publisher pub_DutyCycle_L;
 	ros::Publisher pub_DutyCycle_R;
+    ros::Publisher light;
 	ros::Subscriber sub_joy;
 
 };
