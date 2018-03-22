@@ -30,7 +30,7 @@
     <link name="base_link">
         <visual>
           <geometry>
-            <box size="${base_len} ${base_wid} ${base_height}"/>
+            <box size="${10*base_len} ${base_wid} ${base_height}"/>
           </geometry>
           <material name="white"/>
         </visual>
@@ -101,12 +101,12 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
             <parent link="base_link"/>
             <child link="${position}_wheel"/>
             <axis xyz="0 0 1"/>
-            <origin xyz="0 ${reflect*(base_wid/2)} ${-1*base_height}" rpy="${-pi/2} 0 0"/>
+            <origin xyz="0 ${reflect*(base_wid/2)} ${-1*base_height}" rpy="${pi/2} 0 0"/>
         </joint>
         <link name="${position}_wheel">
             <visual>
                 <geometry>
-                    <cylinder length = "${wheel_length}" radius="${wheel_radius}"/>
+                    <cylinder length = "${wheel_length}" radius="${2*wheel_radius}"/>
                 </geometry>
                 <material name="white"/>
             </visual>
