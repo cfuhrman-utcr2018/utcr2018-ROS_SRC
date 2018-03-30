@@ -30,7 +30,7 @@
     <link name="base_link">
         <visual>
           <geometry>
-            <box size="${10*base_len} ${base_wid} ${base_height}"/>
+            <box size="${base_len} ${base_wid} ${base_height}"/>
           </geometry>
           <material name="white"/>
         </visual>
