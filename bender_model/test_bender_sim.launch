@@ -1,4 +1,5 @@
 <launch>
+<!-- This program launches the Bender Simulation with the ability to drive around with the keyboard -->
     <include file="$(find bender_model)/bender_simulation.launch">
         <arg name="model" default="$(find bender_model)/model.urdf.xacro"/>
         <arg name="gui" default="false" />
