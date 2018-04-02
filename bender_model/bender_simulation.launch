@@ -4,11 +4,13 @@
     <arg name="gui" default="false" />
     <arg name="rvizconfig" default="$(find bender_model)/urdf.rviz"/>
 
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" />
+
+
     <include file="$(find bender_model)/gazebo.launch">
       <!--arg name="model" value="$(arg model)" /-->
     </include>
-
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" />
 
     <rosparam command="load"
               file="$(find bender_model)/joints.yaml"

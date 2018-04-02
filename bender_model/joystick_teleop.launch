@@ -1,0 +1,13 @@
+<launch>
+<!-- This program launches the Bender Simulation with the ability to drive around with the joystick -->
+    <include file="$(find bender_model)/bender_simulation.launch">
+    <arg name="model" default="$(find bender_model)/model.urdf.xacro"/>
+    <arg name="gui" default="false" />
+    <arg name="rvizconfig" default="$(find bender_model)/urdf.rviz"/>
+    </include>
+
+    <node name="joy" pkg ="joy" type="joy_node"/>
+    <node name="teleop_twist_joy" pkg="teleop_twist_joy" type="teleop_node">
+        <remap from="cmd_vel" to="/bender_diff_drive_controller/cmd_vel"/>
+    </node>
+</launch>
