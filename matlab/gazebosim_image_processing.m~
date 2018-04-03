@@ -1,0 +1,9 @@
+% This program connects to a Gazebo simulation within ROS and pulls
+% image data from the camera continuously. It impliments an image 
+% processing algorithm to display all white.
+
+clear, clc, close all
+
+rosinit
+
+im_sub = rossubscriber('/camera/image_raw');
