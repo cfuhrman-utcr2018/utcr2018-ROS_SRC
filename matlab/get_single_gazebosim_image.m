@@ -5,10 +5,9 @@ clear, clc, close all
 rosinit
 
 im_sub = rossubscriber('/camera/image_raw')
-while 1
-    im_ros = receive(im_sub,10);
-    im = readImage(im_ros);
-    imshow(im)
-end
+im_ros = receive(im_sub,10);
+im = readImage(im_ros);
+imshow(im)
+
 
 rosshutdown
