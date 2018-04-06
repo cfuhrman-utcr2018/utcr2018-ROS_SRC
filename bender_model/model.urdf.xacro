@@ -2,9 +2,9 @@
 <robot name="bender" xmlns:xacro="http://ros.org/wiki/xacro">
 
     <xacro:property name="pi" value="3.141592653589794" />
-    <xacro:property name="base_len" value="0.89" />
-    <xacro:property name="base_wid" value="0.80" />
-    <xacro:property name="base_height" value="0.20" />
+    <xacro:property name="base_len" value="0.90" />
+    <xacro:property name="base_wid" value="0.56" />
+    <xacro:property name="base_height" value="0.71" />
     <xacro:property name="caster_length" value="0.10" />
     <xacro:property name="caster_radius" value="0.15" />
     <xacro:property name="wheel_length" value="0.10" />
@@ -12,6 +12,7 @@
     <xacro:property name="update_rate" value="50"/>
     <xacro:property name="hokuyo_size" value="0.05"/>
     <xacro:property name="camera_size" value="0.25"/>
+    <xacro:property name="cam_pitch" value="${-pi/6}"/>
 
     <robotBaseFrame>base_link</robotBaseFrame>
 
@@ -68,7 +69,7 @@
             <parent link="base_link"/>
             <child link="${position}_caster"/>
             <axis xyz="0 0 1"/>
-            <origin xyz="${reflect*(base_wid/2)} 0 ${-1 * base_height}" rpy="${pi/2} 0 0"/>
+            <origin xyz="${reflect*(base_wid/2)} 0 ${-0.5 * base_height}" rpy="${pi/2} 0 0"/>
         </joint>
         <link name="${position}_caster">
             <visual>
@@ -101,7 +102,7 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
             <parent link="base_link"/>
             <child link="${position}_wheel"/>
             <axis xyz="0 0 1"/>
-            <origin xyz="0 ${reflect*(base_wid/2)} ${-1*base_height}" rpy="${-pi/2} 0 0"/>
+            <origin xyz="0 ${reflect*(base_wid/2)} ${-0.5*base_height}" rpy="${-pi/2} 0 0"/>
         </joint>
         <link name="${position}_wheel">
             <visual>
@@ -157,6 +158,22 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
         <robotNamespace>/</robotNamespace>
       </plugin>
     </gazebo>
+
+<!-- Gazebo plugin for GPS data -->
+    <gazebo>
+        <plugin name="gps_controller" filename="libhector_gazebo_ros_gps.so">
+            <alwayson>true</alwayson>
+            <updaterate>1.0</updaterate>
+            <bodyname>base_link</bodyname>
+            <topicname>/fix</topicname>
+            <velocitytopicname>/fix_velocity</velocitytopicname>
+            <drift>5.0 5.0 5.0</drift>
+            <gaussiannoise>0.1 0.1 0.1</gaussiannoise>
+            <velocitydrift>0 0 0</velocitydrift>
+            <velocitygaussiannoise>0.1 0.1 0.1</velocitygaussiannoise>
+        </plugin>
+    </gazebo>
+
 <!-- Vision Camera -->
     <link name="camera_link">
         <visual>
@@ -167,7 +184,7 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
         </visual>
     </link>
     <joint name="camera_joint" type="fixed">
-      <origin xyz="0 0 ${1+base_height}" rpy="0 0 0" />
+      <origin xyz="0 0 ${1+base_height}" rpy="0 ${-cam_pitch} 0" />
       <parent link="base_link"/>
       <child link="camera_link" />
     </joint>
@@ -177,22 +194,22 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
         <camera name="head">
           <horizontal_fov>1.3962634</horizontal_fov>
           <image>
-            <width>640</width>
+            <width>752</width>
             <height>480</height>
-            <format>R8G8B8</format>
+            <format>L8</format>
           </image>
           <clip>
             <near>0.02</near>
             <far>300</far>
           </clip>
-          <noise>
+          <!--noise>
             <type>gaussian</type>
-            <!-- Noise is sampled independently per pixel on each frame.
+            < Noise is sampled independently per pixel on each frame.
                  That pixel's noise value is added to each of its color
-                 channels, which at that point lie in the range [0,1]. -->
+                 channels, which at that point lie in the range [0,1]. >
             <mean>0.0</mean>
             <stddev>0.007</stddev>
-          </noise>
+          </noise-->
         </camera>
         <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
           <alwaysOn>true</alwaysOn>
@@ -231,8 +248,8 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
       <turnGravityOff>false</turnGravityOff>
       <sensor type="ray" name="head_hokuyo_sensor">
         <pose>${hokuyo_size/2} 0 0 0 0 0</pose>
-        <!--visualize>false</visualize-->
-        <visualize>true</visualize>
+        <visualize>false</visualize>
+        <!--visualize>true</visualize-->
         <update_rate>30</update_rate>
         <ray>
           <scan>
