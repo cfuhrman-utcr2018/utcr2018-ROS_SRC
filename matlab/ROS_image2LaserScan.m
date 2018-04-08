@@ -20,8 +20,7 @@ line_scan.AngleIncrement = angles(2)-angles(1);
 [lines_pub,lines_msg] = rospublisher('/lines','sensor_msgs/LaserScan');
 
 % im_sub = rossubscriber('/camera/image_raw'); % Subscribe to cameara topic
-% % Loop to here
-% im_ros = receive(im_sub,10); % recieve the ROS data
+while 1% im_ros = receive(im_sub,10); % recieve the ROS data
 % im = readImage(im_ros); % decode the image
 
 % Process the data:
@@ -40,9 +39,12 @@ width = length(birdsEyeImage(1,:));
 ranges = zeros(1,total_angles);
 intensities = zeros(1,total_angles);
 
-flipped_image = flipud(birdsEyeImage);
+image_lidar = lidar_image_view(birdsEyeImage);
+flipped_image = flipud(image_lidar);
 
 % Create LaserScan
+time = rostime('now'); % FOr the header, the time that the first scan was
+% recieved by the device
 for x = 1:width
     x_distance = x_max*(width/x);
     for y = 1:height
@@ -50,8 +52,8 @@ for x = 1:width
        pix = flipped_image(y,x);
        if pix ~= 0
            r = sqrt(x_distance^2+y_distance^2);
-           t = atan(y_distance/x_distance);
-           eq = (angles - t) == 0;
+           t = atan2(y_distance,x_distance);
+           eq = (angles - t) < line_scan.AngleIncrement;
            range_indx = find(eq);
            ranges(range_indx) = r;
            intensities(range_indx) = 100;
@@ -59,6 +61,9 @@ for x = 1:width
        end
     end
 end
+
+
+line_scan.Header.Stamp = time;
 line_scan.Ranges = ranges;
 line_scan.Intensities = intensities;
 
@@ -67,3 +72,4 @@ lines_msg = line_scan;
 
 send(lines_pub, lines_msg)
 
+end
