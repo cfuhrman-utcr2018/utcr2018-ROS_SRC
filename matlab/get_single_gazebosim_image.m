@@ -2,7 +2,7 @@
 % from a Gazebo simulation
 clear, clc, close all
 
-rosinit
+%rosinit
 
 im_sub = rossubscriber('/camera/image_raw')
 im_ros = receive(im_sub,10);
@@ -10,4 +10,4 @@ im = readImage(im_ros);
 imshow(im)
 
 
-rosshutdown
+%rosshutdown

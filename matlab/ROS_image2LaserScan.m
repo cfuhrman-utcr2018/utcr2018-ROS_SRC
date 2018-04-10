@@ -20,17 +20,13 @@ line_scan.AngleIncrement = angles(2)-angles(1);
 [lines_pub,lines_msg] = rospublisher('/lines','sensor_msgs/LaserScan');
 
 % im_sub = rossubscriber('/camera/image_raw'); % Subscribe to cameara topic
-while 1% im_ros = receive(im_sub,10); % recieve the ROS data
+% im_ros = receive(im_sub,10); % recieve the ROS data
 % im = readImage(im_ros); % decode the image
 
 % Process the data:
-TH = (im > 150);
-BW = medfilt2(TH);
-F = bwareaopen(BW,30);
-% convert to double
-F = im2double(F);
+im_th = threshold(im, 150);
 % execure BirdsEyeTransform
-[birdsEyeImage, range_max, spaceToOneSide] = birdseye(F);
+[birdsEyeImage, range_max, spaceToOneSide] = birdseye(im_th);
 x_max = 2*spaceToOneSide;
 
 % image length and height
@@ -48,7 +44,8 @@ time = rostime('now'); % FOr the header, the time that the first scan was
 for x = 1:width
     x_distance = x_max*(width/x);
     for y = 1:height
-       y_distance = range_max*(height/y);
+       y_distance = 0.0241*y+2.9697; % from calculations on image size
+       % vs distance ahead of image
        pix = flipped_image(y,x);
        if pix ~= 0
            r = sqrt(x_distance^2+y_distance^2);
@@ -72,4 +69,3 @@ lines_msg = line_scan;
 
 send(lines_pub, lines_msg)
 
-end
