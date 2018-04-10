@@ -3,13 +3,14 @@
 
 
 im_sub = rossubscriber('/camera/image_raw')
+i = 1;
 
-for i=1:150
+while 1
     im_ros = receive(im_sub,1);
     im = readImage(im_ros);
     % imshow(im)
    imwrite(im,sprintf('%d.jpg',i))
    disp(i)
-   pause(0.1)
+   i = i + 1;
 end
 
