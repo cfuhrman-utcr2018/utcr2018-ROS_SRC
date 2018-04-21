@@ -11,7 +11,7 @@ PCL1mensage = rosmessage('geometry_msgs/Point32'); % creates a message
 for i =1: size(xyzvalid ,1)
     % Loop that converts all points in the xyz matrix that are not NaNs
     % into the geometry_msgs/Point32 
-    PCL1mensage(i).X = xyzvalid(i ,1);
+    PCL1mensage(i).X = xyzvalid(i,1);
     PCL1mensage(i).Y = xyzvalid(i, 2);
     PCL1mensage(i).Z = xyzvalid(i, 3);
 end

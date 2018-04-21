@@ -12,7 +12,7 @@ clear%, clc, close all
 addpath(genpath('Functions')) % to use functions in different folder
 
 % Initiailze variables:
-threshold_value = 150;
+threshold_value = 0.5;
 
 % create subscriber to depth cloud:
 depth_sub = rossubscriber('/camera/depth_registered/points');
@@ -23,6 +23,7 @@ lines_msg.Header.FrameId = 'line_camera';
 lines_pub = rospublisher('/lines','sensor_msgs/PointCloud');
 
 % Loop to here!!
+
 
 % Get data from ROS
 depth_ros = receive(depth_sub,10); % recieve the ROS cloud
@@ -39,13 +40,26 @@ lines_image = process_image(im_ros, threshold_value);
     % creating a MATLAB ptcloud to visualize data within MATLAB
     
 % Create an XYZ matrix containing only lines
-xyz = process_xyz(depth_image, lines_image);
+xyz = depth_image.*lines_image;
 
-% Convert xyz from a MxNx3 matrix to a (M*N)x3 matrix as if the
-% PreserveStructureOnRead was set to FALSE
-xyz_Dx3 = mxnx3_to_dx3(xyz);
+% % Convert xyz from a MxNx3 matrix to a (M*N)x3 matrix as if the
+% % PreserveStructureOnRead was set to FALSE
+% xyz_Dx3 = mxnx3_to_dx3(xyz);
+% 
+% % Convert XYZ matrix into /sensor_msgs/PointCloud
+% lines_msg = xyz_to_PointCloud(xyz_Dx3, lines_msg);
+% lines_msg.Header.Stamp = rostime('now');
 
-% Convert XYZ matrix into /sensor_msgs/PointCloud
-lines_msg = xyz_to_PointCloud(xyz_Dx3, lines_msg);
-lines_msg.Header.Stamp = rostime('now');
+% create messages to pass the depth and rbg images
+depth = rosmessage('sensor_msgs/Image');
+color = rosmessage('sensor_msgs/Image');
 
+depth_pub = rospublisher('/image_rect','sensor_msgs/Image');
+
+depth.Encoding = '16UC1';
+color.Encoding = 'rgb8';
+
+writeImage(depth, uint16(xyz));
+writeImage(color, uint8(lines_image));
+
+send(depth_pub, depth);
