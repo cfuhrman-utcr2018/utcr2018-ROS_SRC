@@ -1,11 +1,17 @@
 % This node takes a wheel velocity target and translates into PWM signals
 % for the Victor 888 Motor Controllers. This node was written in MATLAB and
 % translated to C for use in ROS with the differential_drive package
+rosshutdown
+clear, clc, close all
+rosinit
 
 % Constants:
 wheel_radius = 128.95e-3; %meters
 gear_ratio = 1/12; % wheel turns/motor turns
 max_rot = 4320; % maximum rpm of motors
+
+% sub_left_target = rossubscriber('lmotor_cmd');
+% sub_right_target = rossubscriber('rmotor_cmd');
 
 sub_left_target = rossubscriber('lmotor_cmd');
 sub_right_target = rossubscriber('rmotor_cmd');
@@ -32,24 +38,31 @@ while 1
     right_target = double(right_target);
     
     % Convert from m/s to motor RPM
-    left_rpm = left_target*60/(2*pi*wheel_radius*gear_ratio);
-    right_rpm = right_target*60/(2*pi*wheel_radius*gear_ratio);
+    left_rpm = abs(left_target)*60/(2*pi*wheel_radius*gear_ratio);
+    right_rpm = abs(right_target)*60/(2*pi*wheel_radius*gear_ratio);
+    
+    if left_rpm > max_rot
+        left_rpm = max_rot;
+    end
+    if right_rpm > max_rot
+        right_rpm = max_rot;
+    end
 
     % Convert from rpm to PWM for right and left motor with cases for 
     % forward and reverse velocity commands. A 0 m/s command puts us in 
     % the middele of our motor controller curve for neutral
     if left_target > 0
-        left_PWM = (92/max_rot)*left_rpm+163;
+        left_PWM = (92/max_rot)*left_rpm+160;
     elseif left_target < 0
-        left_PWM = (152/max_rot)*left_rpm+1;
+        left_PWM = 153-(152*left_rpm)/max_rot;
     else
         left_PWM = 155;
     end
 
     if right_target > 0
-        right_PWM = (92/max_rot)*right_rpm+163;
+        right_PWM = (92/max_rot)*right_rpm+160;
     elseif right_target < 0
-        right_PWM = (152/max_rot)*right_rpm+1;
+        right_PWM = 153-(152*right_rpm)/max_rot;    
     else
         right_PWM = 155;
     end
