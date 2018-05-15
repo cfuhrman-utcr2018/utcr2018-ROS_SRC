@@ -1,0 +1,74 @@
+<launch>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="link1_broadcaster" args="0.1 0 0.2 0 0 0 base_link laser" />
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bender_2dnav)/Rviz_Config/laser_odometry.rviz" required="true" />
+
+
+    <node name="joy" pkg ="joy" type="joy_node"/>
+    <node name="teleop_twist_joy" pkg="teleop_twist_joy" type="teleop_node">
+        <param name="scale_angular" value="2"/>
+        <param name="scale_linear" value="2"/>
+    </node>
+
+    <node name="lidar" pkg="urg_node" type="urg_node">
+        <param name="serial_port" value="/dev/ttyACM1"/>
+    </node>
+
+    <node pkg="rf2o_laser_odometry" type="rf2o_laser_odometry_node" name="rf2o_laser_odometry">
+      <param name="laser_scan_topic" value="scan"/>               # topic where the lidar scans are being published
+      <param name="odom_topic" value="/odom" />                   # topic where tu publish the odometry estimations
+      <param name="publish_tf" value="true" />                   # wheter or not to publish the tf::transform (base->odom)
+      <param name="base_frame_id" value="/base_link"/>            # frame_id (tf) of the mobile robot base. A tf transform
+                                                                  # from the laser_frame to the base_frame is mandatory
+      <param name="odom_frame_id" value="/odom" />                # frame_id (tf) to publish the odometry estimations
+      <!--param name="init_pose_from_topic" value="/base_pose_ground_truth" /--> # (Odom topic) Leave empty to start at point (0,0)
+      <param name="init_pose_from_topic" value=" "/>
+      <param name="freq" value="6.0"/>                            # Execution frequency.
+      <param name="verbose" value="true" />                       # verbose
+    </node>
+
+    <node pkg="rosserial_python" type="serial_node.py" name="serial_node">
+      <param name="port" value="/dev/ttyACM0"/>
+      <param name="baud" value="57600"/>
+    </node>
+
+    <!-- Launch the PID, Odom Calculation, and Twist to Motors Nodes-->
+    <rosparam param="ticks_meter">2469</rosparam>
+    <rosparam param ="encoder_max">2147483647</rosparam>
+    <rosparam param ="encoder_min">-2147483647</rosparam>
+
+    <!--node pkg="differential_drive" type="pid_velocity.py" name="lpid_velocity">
+        <remap from="wheel" to="left_ticks"/>
+        <remap from="motor_cmd" to="lmotor_cmd"/>
+        <remap from="wheel_vtarget" to="lwheel_vtarget"/>
+        <remap from="wheel_vel" to="lwheel_vel"/>
+        <rosparam param="Kp">2</rosparam>
+        <rosparam param="Ki">0</rosparam>
+        <rosparam param="Kd">0</rosparam>
+        <rosparam param="out_min">-10</rosparam>
+        <rosparam param="out_max">10</rosparam>
+        <rosparam param="rate">30</rosparam>
+        <rosparam param="timeout_ticks">4</rosparam>
+        <rosparam param="rolling_pts">2</rosparam>
+    </node>
+
+    <node pkg="differential_drive" type="pid_velocity.py" name="rpid_velocity">
+        <remap from="wheel" to="right_ticks"/>
+        <remap from="motor_cmd" to="rmotor_cmd"/>
+        <remap from="wheel_vtarget" to="rwheel_vtarget"/>
+        <remap from="wheel_vel" to="rwheel_vel"/>
+        <rosparam param="Kp">2</rosparam>
+        <rosparam param="Ki">0</rosparam>
+        <rosparam param="Kd">0</rosparam>
+        <rosparam param="out_min">-10</rosparam>
+        <rosparam param="out_max">10</rosparam>
+        <rosparam param="rate">30</rosparam>
+        <rosparam param="timeout_ticks">4</rosparam>
+        <rosparam param="rolling_pts">2</rosparam>
+    </node-->
+
+    <node pkg="differential_drive" type="twist_to_motors.py" name="twist_to_motors" output="screen">
+      <remap from="twist" to="cmd_vel"/>
+      <rosparam param="base_width">0.840</rosparam>
+    </node>
+</launch>

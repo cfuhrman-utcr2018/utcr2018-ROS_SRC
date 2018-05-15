@@ -1,0 +1,15 @@
+<launch>
+ <arg name="camera_info_topic" default="/camera/color/camera_info"/>
+ <arg name="rgb_topic"         default="/camera/color/image_raw"/>
+ <arg name="depth_topic"       default="/camera/depth/image_rect_raw"/>
+
+ <include file="$(find realsense2_camera)/launch/rs_rgbd.launch"/>
+
+    <node pkg="rtabmap_ros" type="rgbd_odometry" name="rgbd_odometry" output="screen">
+      <param name="frame_id"                    type="string" value="base_link"/>
+
+      <remap from="rgb/image"       to="$(arg rgb_topic)"/>
+      <remap from="depth/image"     to="$(arg depth_topic)"/>
+      <remap from="rgb/camera_info" to="$(arg camera_info_topic)"/>
+    </node>
+</launch>
