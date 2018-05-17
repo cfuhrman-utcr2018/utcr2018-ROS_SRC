@@ -13,5 +13,9 @@ BW = medfilt2(TH);
 F = bwareaopen(BW,30);
 % convert to double
 processed_image = im2double(F);
-figure; imshow(processed_image)
+% Create a pseudo-rgb image so that we can send to ROS using the rgb color
+% encoding. The data is the same. 
+processed_image(:,:,2) = processed_image(:,:,1);
+processed_image(:,:,3) = processed_image(:,:,1);
+% figure; imshow(processed_image)
 end

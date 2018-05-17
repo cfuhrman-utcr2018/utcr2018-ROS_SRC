@@ -7,28 +7,33 @@
 % - threshold.m --> detects the images and returns a binary 0 or 1 image
 %   where the while lines are marked with a 1
 % - 
+
+clear, clc, close all
 rosshutdown
 rosinit
-clear, clc, close all
+
 addpath(genpath('Functions')) % to use functions in different folder
 
+% File for testing with sample ROS PointCloud2 variable
+load ~/catkins_ws/src/matlab/'Saved Variables'/ROS_PointCloud2.mat
+
 % Initiailze variables:
-threshold_value = 0.7  
+threshold_value = 0.7;
 
-% create subscriber to depth cloud:
-PointCloud_sub = rossubscriber('/camera/depth_registered/points');
-
-% create published of processed data
-lines_msg = rosmessage('sensor_msgs/PointCloud');
-lines_msg.Header.FrameId = 'line_camera';
-lines_pub = rospublisher('/lines','sensor_msgs/PointCloud');
-
-% Loop to here!!
-
-
-% Get data from ROS
-ptcloud_ros = receive(PointCloud_sub,10); % recieve the ROS cloud
-ptcloud_ros.PreserveStructureOnRead = true;
+% % create subscriber to depth cloud:
+% PointCloud_sub = rossubscriber('/camera/depth_registered/points');
+% 
+% % create published of processed data
+% lines_msg = rosmessage('sensor_msgs/PointCloud');
+% lines_msg.Header.FrameId = 'line_camera';
+% lines_pub = rospublisher('/lines','sensor_msgs/PointCloud');
+% 
+% % Loop to here!!
+% 
+% 
+% % Get data from ROS
+% ptcloud_ros = receive(PointCloud_sub,10); % recieve the ROS cloud
+% ptcloud_ros.PreserveStructureOnRead = true;
 
 im_ros = readRGB(ptcloud_ros); % create an rgb image from PointCloud
 depth_ros = readXYZ(ptcloud_ros); % create depth mapping from PointCloud
@@ -60,11 +65,11 @@ color = rosmessage('sensor_msgs/Image');
 depth_pub = rospublisher('/processed_depth','sensor_msgs/Image');
 color_pub = rospublisher('/processed_color', 'sensor_msgs/Image'); 
 
-color.Encoding = '16UC1';
-depth.Encoding = 'rgb8';
+color.Encoding = '64fc3';
+depth.Encoding = '32fc3';
 
-writeImage(depth, uint8(xyz_lines));
-writeImage(color, uint16(lines_image));
+writeImage(depth, xyz_lines);
+writeImage(color, lines_image);
 
 send(depth_pub, depth);
 send(color_pub, color);
