@@ -1,19 +1,27 @@
 <launch>
+    <group ns="cloud_gen">
 <!-- This launch file uses the depth_image_proc node to transform a color image and a depth image
     into an xyzrgb point cloud for use with the Navigation Stack -->
+
 <!-- This file is to be used with the Intel Realsense node rs_rgbd.launch and the MATLAB code titles
      realsense_lane_detect.m outputting the processed images-->
 
-    <arg name="rgb_camera_info" value="/camera/color/camera_info"/>
-    <arg name="rgb_rimg_ect" value="/camera/rgb/image_color"/>  <!--Rectified color image-->
-    <arg name="depReg_imgrect" value="/camera/depth/image"/>  <!--Rectified depth image-->
-    <arg name="out_cloud" value="camera/depth_registered/points"/>
+         <arg name="rgb_camera_info"     value="/camera/color/camera_info"/>
+         <arg name="rgb_rimg_ect"        value="/processed_color"/>  <!--Rectified color image-->
+         <arg name="depReg_imgrect"      value="/processed_depth"/>  <!--Rectified depth image-->
+         <arg name="out_cloud"           value="/white_lines"/>
 
-    <!-- Construct point cloud of the rgb and depth topics -->
-    <node pkg="nodelet" type="nodelet" name="points_xyzrgb" args="load depth_image_proc/point_cloud_xyzrgb standalone_nodelet --no-bond">
-        <remap from="rgb/camera_info" to="$(arg rgb_camera_info)" />
-        <remap from="rgb/image_rect_color" to="$(arg rgb_rimg_ect)"/>
-        <remap from="depth_registered/image_rect" to="$(arg depReg_imgrect)"/>
-        <remap from="depth_registered/points" to="$(arg out_cloud)"/>
-    </node>
+        <!-- Nodelet manager for this pipeline -->
+        <node pkg="nodelet" type="nodelet" args="manager"
+            name="standalone_nodelet" output="screen"/>
+
+        <!-- Construct point cloud of the rgb and depth topics -->
+        <node pkg="nodelet" type="nodelet" name="depth_image_proc"
+            args="load depth_image_proc/point_cloud_xyzrgb standalone_nodelet" output="screen">
+            <remap from="rgb/camera_info"               to="/camera/color/camera_info" />
+            <remap from="rgb/image_rect_color"          to="$(arg rgb_rimg_ect)"/>
+            <remap from="depth_registered/image_rect"   to="$(arg depReg_imgrect)"/>
+            <remap from="depth_registered/points"       to="$(arg out_cloud)"/>
+        </node>
+    </group>
 </launch>
