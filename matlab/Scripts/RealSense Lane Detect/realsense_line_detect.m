@@ -13,7 +13,7 @@ clear, clc, close all
 addpath(genpath('Functions')) % to use functions in different folder
 
 % Initiailze variables:
-threshold_value = 0.7
+threshold_value = 0.7  
 
 % create subscriber to depth cloud:
 depth_sub = rossubscriber('/camera/depth_registered/points');
