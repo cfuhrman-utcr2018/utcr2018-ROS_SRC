@@ -1,5 +1,10 @@
 <launch>
-    <arg name="rgb_camera_info" value="/camera/rgb/camera_info"/>
+<!-- This launch file uses the depth_image_proc node to transform a color image and a depth image
+    into an xyzrgb point cloud for use with the Navigation Stack -->
+<!-- This file is to be used with the Intel Realsense node rs_rgbd.launch and the MATLAB code titles
+     realsense_lane_detect.m outputting the processed images-->
+
+    <arg name="rgb_camera_info" value="/camera/color/camera_info"/>
     <arg name="rgb_rimg_ect" value="/camera/rgb/image_color"/>  <!--Rectified color image-->
     <arg name="depReg_imgrect" value="/camera/depth/image"/>  <!--Rectified depth image-->
     <arg name="out_cloud" value="camera/depth_registered/points"/>

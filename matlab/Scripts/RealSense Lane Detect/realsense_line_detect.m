@@ -7,7 +7,7 @@
 % - threshold.m --> detects the images and returns a binary 0 or 1 image
 %   where the while lines are marked with a 1
 % - 
-rosshutdown,
+rosshutdown
 rosinit
 clear, clc, close all
 addpath(genpath('Functions')) % to use functions in different folder
@@ -16,7 +16,7 @@ addpath(genpath('Functions')) % to use functions in different folder
 threshold_value = 0.7  
 
 % create subscriber to depth cloud:
-depth_sub = rossubscriber('/camera/depth_registered/points');
+PointCloud_sub = rossubscriber('/camera/depth_registered/points');
 
 % create published of processed data
 lines_msg = rosmessage('sensor_msgs/PointCloud');
@@ -27,23 +27,23 @@ lines_pub = rospublisher('/lines','sensor_msgs/PointCloud');
 
 
 % Get data from ROS
-depth_ros = receive(depth_sub,10); % recieve the ROS cloud
-depth_ros.PreserveStructureOnRead = true;
+ptcloud_ros = receive(PointCloud_sub,10); % recieve the ROS cloud
+ptcloud_ros.PreserveStructureOnRead = true;
 
-im_ros = readRGB(depth_ros); % create an rgb image from PointCloud
-depth_image = readXYZ(depth_ros); % create depth mapping from PointCloud
+im_ros = readRGB(ptcloud_ros); % create an rgb image from PointCloud
+depth_ros = readXYZ(ptcloud_ros); % create depth mapping from PointCloud
 
 % Detect white lines and return an image showing only white lines:
 lines_image = process_image(im_ros, threshold_value);
 
-% create an RBG point cloud containing detected lines
-ptcloud = process_ptcloud(im_ros, depth_image, lines_image); % For 
-    % creating a MATLAB ptcloud to visualize data within MATLAB
-    figure
-pcshow(ptcloud);
+% % create an RBG point cloud containing detected lines
+% ptcloud = process_ptcloud(im_ros, depth_image, lines_image); % For 
+%     % creating a MATLAB ptcloud to visualize data within MATLAB
+%     figure
+% pcshow(ptcloud);
 
 % Create an XYZ matrix containing only lines
-xyz = depth_image.*lines_image;
+xyz_lines = depth_ros.*lines_image;
 
 % % Convert xyz from a MxNx3 matrix to a (M*N)x3 matrix as if the
 % % PreserveStructureOnRead was set to FALSE
@@ -54,15 +54,17 @@ xyz = depth_image.*lines_image;
 % lines_msg.Header.Stamp = rostime('now');
 
 % create messages to pass the depth and rbg images
-% depth = rosmessage('sensor_msgs/Image');
-% color = rosmessage('sensor_msgs/Image');
-% 
-% depth_pub = rospublisher('/image_rect','sensor_msgs/Image');
-% 
-% depth.Encoding = '16UC1';
-% color.Encoding = 'rgb8';
-% 
-% writeImage(depth, uint16(xyz));
-% writeImage(color, uint8(lines_image));
-% 
-% send(depth_pub, depth);
+depth = rosmessage('sensor_msgs/Image');
+color = rosmessage('sensor_msgs/Image');
+
+depth_pub = rospublisher('/processed_depth','sensor_msgs/Image');
+color_pub = rospublisher('/processed_color', 'sensor_msgs/Image'); 
+
+color.Encoding = '16UC1';
+depth.Encoding = 'rgb8';
+
+writeImage(depth, uint8(xyz_lines));
+writeImage(color, uint16(lines_image));
+
+send(depth_pub, depth);
+send(color_pub, color);
