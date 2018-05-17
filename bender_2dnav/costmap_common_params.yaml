@@ -17,4 +17,4 @@ obstacle_layer:
     track_unknown_space: true
     combination_method: 1
     observation_sources: LiDAR_scan
-    LiDAR_scan: {data_type: LaserScan, sensor_frame: /scan, clearing: true, marking: true, topic: /scan, inf_is_valid: false}
+    LiDAR_scan: {data_type: LaserScan, sensor_frame: hokuyo_link, clearing: true, marking: true, topic: /scan, inf_is_valid: false}

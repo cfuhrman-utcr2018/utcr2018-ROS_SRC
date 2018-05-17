@@ -51,7 +51,7 @@
       <rosparam file="$(find bender_2dnav)/global_costmap_params.yaml" command="load" />
       <rosparam file="$(find bender_2dnav)/base_local_planner_params.yaml" command="load" />
 <!-- Remapping to the Gazebo variables for cmd_vel and odom. Don't know how to change those -->
-      <!--remap from="cmd_vel" to="/bender_diff_drive_controller/cmd_vel"/>
-      <remap from="odom" to="/bender_diff_drive_controller/odom"/-->
+      <remap from="cmd_vel" to="/bender_diff_drive_controller/cmd_vel"/>
+      <remap from="odom" to="/bender_diff_drive_controller/odom"/>
     </node>
 </launch>

@@ -1,6 +1,6 @@
 global_costmap:
   global_frame: /map # defines what coordinate frame the costmap should run in
-  robot_base_frame: /base_footprint # the coordinate frame the robot should reference as the base of the bot
+  robot_base_frame: /base_link # the coordinate frame the robot should reference as the base of the bot
   update_frequency: 1.0 # (Hz)
   publish_frequency: 1.0
   static_map: true # should the costmap initialize itself based on a map served by the map_server.
