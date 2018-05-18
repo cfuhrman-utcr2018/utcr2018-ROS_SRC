@@ -64,12 +64,14 @@
            TwistStamped, Imu). To add a new one, simply append the next number in the sequence to its base name,
            e.g., odom0, odom1, twist0, twist1, imu0, imu1, imu2, etc. The value should be the topic name. These
            parameters obviously have no default values, and must be specified. -->
-      <param name="odom0" value="/odom_raw"/>
+      <!--param name="odom0" value="/odom_raw"/ <- TEMPLATE-->
+      <!-- for Simulation in Gazebo with Bender -->
+      <param name="odom0" value="/bender_diff_drive_controller/odom"/>
     <!--  <param name="odom1" value="example/another_odom"/> -->
     <!--  <param name="pose0" value="example/pose"/> -->
     <!--  <param name="twist0" value="example/twist"/> -->
       <param name="imu0" value="/imu"/>
-      <param name="imu1" value="/MPU6050"/>
+      <!--param name="imu1" value="/MPU6050"/-->
 
       <!-- Each sensor reading updates some or all of the filter's state. These options give you greater control over
            which values from each measurement are fed to the filter. For example, if you have an odometry message as input,
@@ -82,7 +84,7 @@
                                       false, false, false,
                                       true,  true,  false,
                                       false, false, true,
-                                      false, false, false]</rosparam>
+                                      true, true, false]</rosparam>
 
      <!-- <rosparam param="odom1_config">[false, false, false,
                                       false, false, false,
@@ -104,15 +106,15 @@
 
       <rosparam param="imu0_config">[false, false, false,
                                      false, false, false,
-                                     false, false, false,
+                                     true, true, true,
                                      false, false, true,
-                                     false,  false, false]</rosparam>
+                                     true,  true, false]</rosparam>
 
-      <rosparam param="imu1_config">[false, false, false,
+      <!--rosparam param="imu1_config">[false, false, false,
                                      false, false, true,
                                      false, false, false,
                                      false, false, false,
-                                     false, false, false]</rosparam>
+                                     false, false, false]</rosparam-->
 
       <!-- The best practice for including new sensors in robot_localization's state estimation nodes is to pass in velocity
            measurements and let the nodes integrate them. However, this isn't always feasible, and so the state estimation
@@ -134,7 +136,7 @@
       <!--<param name="odom1_differential" value="false"/>-->
       <!--<param name="pose0_differential" value="true"/>-->
       <param name="imu0_differential" value="false"/>
-      <param name="imu1_differential" value="false"/>
+      <!--param name="imu1_differential" value="false"/-->
 
       <!-- When the node starts, if this parameter is true, then the first measurement is treated as a "zero point" for all
            future measurements. While you can achieve the same effect with the differential paremeter, the key difference is
@@ -144,12 +146,12 @@
      <!-- <param name="odom1_relative" value="true"/>
       <param name="pose0_relative" value="false"/> -->
       <param name="imu0_relative" value="true"/>
-      <param name="imu1_relative" value="true"/>
+      <!--param name="imu1_relative" value="true"/-->
 
       <!-- If we're including accelerations in our state estimate, then we'll probably want to remove any acceleration that
            is due to gravity for each IMU. If you don't want to, then set this to false. Defaults to false if unspecified. -->
       <param name="imu0_remove_gravitational_acceleration" value="false"/>
-      <param name="imu1_remove_gravitational_acceleration" value="false"/>
+      <!--param name="imu1_remove_gravitational_acceleration" value="false"/-->
 
       <!-- If you're having trouble, try setting this to true, and then echo the /diagnostics_agg topic to see
            if the node is unhappy with any settings or data. -->
@@ -168,7 +170,7 @@
       <param name="pose0_queue_size" value="10"/>
       <param name="twist0_queue_size" value="3"/> -->
       <param name="imu0_queue_size" value="1"/>
-      <param name="imu1_queue_size" value="1"/>
+      <!--param name="imu1_queue_size" value="1"/-->
 
       <!-- If your data is subject to outliers, use these threshold settings, expressed as Mahalanobis distances, to control
            how far away from the current vehicle state a sensor measurement is permitted to be. Each defaults to
@@ -231,7 +233,7 @@
 
 
       <!--  Placeholder for output topic remapping -->
-      <remap from="odometry/filtered" to="odom"/>
+      <remap from="odometry/filtered" to="/odom_combined"/>
 
 
     </node>

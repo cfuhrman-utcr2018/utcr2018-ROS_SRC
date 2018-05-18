@@ -5,8 +5,12 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /Status1
         - /TF1/Frames1
         - /TF1/Tree1
+        - /Filtered Odom1
+        - /Filtered Odom1/Covariance1/Position1
+        - /Filtered Odom1/Covariance1/Orientation1
       Splitter Ratio: 0.5
     Tree Height: 295
   - Class: rviz/Selection
@@ -84,6 +88,11 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        imu_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         left_wheel:
           Alpha: 1
           Show Axes: false
@@ -115,9 +124,9 @@ Visualization Manager:
           Value: true
         hokuyo_link:
           Value: true
-        left_wheel:
+        imu_link:
           Value: true
-        map:
+        left_wheel:
           Value: true
         odom:
           Value: true
@@ -129,23 +138,22 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        base_link:
-          back_caster:
-            {}
-          camera_link:
-            {}
-          front_caster:
-            {}
-          hokuyo_link:
-            {}
-          left_wheel:
-            {}
-          right_wheel:
-            {}
-        map:
-          {}
         odom:
-          {}
+          base_link:
+            back_caster:
+              {}
+            camera_link:
+              {}
+            front_caster:
+              {}
+            hokuyo_link:
+              {}
+            imu_link:
+              {}
+            left_wheel:
+              {}
+            right_wheel:
+              {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -225,9 +233,9 @@ Visualization Manager:
           Scale: 1
           Value: true
         Value: true
-      Enabled: true
+      Enabled: false
       Keep: 10
-      Name: Odometry
+      Name: Raw Odometry
       Position Tolerance: 0.100000001
       Shape:
         Alpha: 1
@@ -240,6 +248,40 @@ Visualization Manager:
         Shaft Radius: 0.0500000007
         Value: Arrow
       Topic: /bender_diff_drive_controller/odom
+      Unreliable: false
+      Value: false
+    - Angle Tolerance: 0.100000001
+      Class: rviz/Odometry
+      Covariance:
+        Orientation:
+          Alpha: 0.5
+          Color: 255; 255; 127
+          Color Style: Unique
+          Frame: Local
+          Offset: 1
+          Scale: 1
+          Value: true
+        Position:
+          Alpha: 0.300000012
+          Color: 204; 51; 204
+          Scale: 1
+          Value: true
+        Value: true
+      Enabled: true
+      Keep: 100
+      Name: Filtered Odom
+      Position Tolerance: 0.100000001
+      Shape:
+        Alpha: 1
+        Axes Length: 1
+        Axes Radius: 0.100000001
+        Color: 255; 25; 0
+        Head Length: 0.300000012
+        Head Radius: 0.100000001
+        Shaft Length: 1
+        Shaft Radius: 0.0500000007
+        Value: Arrow
+      Topic: /odom_combined
       Unreliable: false
       Value: true
     - Alpha: 0.699999988
@@ -451,17 +493,18 @@ Visualization Manager:
       Visibility:
         Bender Footprint: true
         Cost Cloud: true
+        Filtered Odom: true
         Global Path: true
         Grid: true
         Hokuyo Scan: true
         Line Scan: true
         Local Path: true
         Map: true
-        Odometry: true
         Path: true
         Plan Path: true
         PoseArray: true
         PoseWithCovariance: true
+        Raw Odometry: true
         RobotModel: true
         TF: true
         Value: true
@@ -470,7 +513,7 @@ Visualization Manager:
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: map
+    Fixed Frame: base_link
     Frame Rate: 30
   Name: root
   Tools:
@@ -491,7 +534,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 20.754818
+      Distance: 5.69700193
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -506,10 +549,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.974795461
+      Pitch: 0.554795802
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.1222229
+      Yaw: 3.56221747
     Saved: ~
 Window Geometry:
   Camera:
