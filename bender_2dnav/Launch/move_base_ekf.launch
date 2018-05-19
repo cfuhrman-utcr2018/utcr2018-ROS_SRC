@@ -1,0 +1,57 @@
+<launch>
+    <!-- Run the map server -->
+    <arg name="map_file" default="$(find bender_model)/bender_worlds_maps/bender_navigation_testing_world.yaml"/>
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)"/>
+      # using map from the bender model world
+
+    <!-- Run AMCL
+    <include file="$(find amcl)/examples/amcl_diff.launch" > # changed for amcl_diff.launch since we have a differential drive bot
+        <param name="odom_frame_id" value="/bender_diff_drive_controller/odom" />
+    </include> -->
+
+    <node pkg="amcl" type="amcl" name="amcl" output="screen">
+      <param name="odom_model_type" value="diff"/>
+      <param name="odom_alpha5" value="0.1"/>
+      <param name="transform_tolerance" value="0.2" />
+      <param name="gui_publish_rate" value="10.0"/>
+      <param name="laser_max_beams" value="700"/>
+      <param name="min_particles" value="500"/>
+      <param name="max_particles" value="5000"/>
+      <param name="kld_err" value="0.05"/>
+      <param name="kld_z" value="0.99"/>
+      <param name="odom_alpha1" value="0.2"/>
+      <param name="odom_alpha2" value="0.2"/>
+      <param name="odom_alpha3" value="0.8"/>
+      <param name="odom_alpha4" value="0.2"/>
+      <param name="laser_z_hit" value="0.5"/>
+      <param name="laser_z_short" value="0.05"/>
+      <param name="laser_z_max" value="0.05"/>
+      <param name="laser_z_rand" value="0.5"/>
+      <param name="laser_sigma_hit" value="0.2"/>
+      <param name="laser_lambda_short" value="0.1"/>
+      <param name="laser_lambda_short" value="0.1"/>
+      <param name="laser_model_type" value="likelihood_field"/>
+      <param name="laser_model_type" value="beam"/>
+      <param name="laser_likelihood_max_dist" value="2.0"/>
+      <param name="update_min_d" value="0.2"/>
+      <param name="update_min_a" value="0.5"/>
+      <param name="odom_frame_id" value="/odom"/>
+      <param name="resample_interval" value="1"/>
+      <param name="transform_tolerance" value="0.1"/>
+      <param name="recovery_alpha_slow" value="0.0"/>
+      <param name="recovery_alpha_fast" value="0.0"/>
+
+      <param name="first_map_only" value="true"/>
+    </node>
+
+    <node pkg="move_base" type="move_base" respawn="true" name="move_base" output="screen">
+      <rosparam file="$(find bender_2dnav)/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find bender_2dnav)/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find bender_2dnav)/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find bender_2dnav)/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find bender_2dnav)/base_local_planner_params.yaml" command="load" />
+<!-- Remapping to the Gazebo variables for cmd_vel and odom. Don't know how to change those -->
+      <remap from="cmd_vel" to="/bender_diff_drive_controller/cmd_vel"/>
+      <remap from="odom" to="/odom_combined"/>
+    </node>
+</launch>

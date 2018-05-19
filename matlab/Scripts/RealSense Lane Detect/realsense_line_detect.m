@@ -36,7 +36,7 @@ depth.Encoding = '32fc3';
 color.Header.FrameId = 'lines_camera';
 depth.Header.FrameId = 'lines_camera';
 
-while 1
+% while 1
 
     % Get data from ROS
     ptcloud_ros = receive(PointCloud_sub,10); % recieve the ROS cloud
@@ -63,8 +63,8 @@ while 1
 
     writeImage(depth, xyz_lines);
     writeImage(color, lines_image);
-
+while 1
     send(depth_pub, depth);
     send(color_pub, color);
-
 end
+% end

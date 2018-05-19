@@ -212,6 +212,7 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
             <stddev>0.007</stddev>
           </noise-->
         </camera>
+        <!-- Code to use a single monocular camera plugin
         <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
           <alwaysOn>true</alwaysOn>
           <updateRate>0.0</updateRate>
@@ -225,7 +226,31 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
           <distortionK3>0.0</distortionK3>
           <distortionT1>0.0</distortionT1>
           <distortionT2>0.0</distortionT2>
-        </plugin>
+        </plugin> -->
+        <!-- Code to use a depth camera (Kinect) -->
+        <plugin name="camera_plugin" filename="libgazebo_ros_openni_kinect.so">
+          <baseline>0.2</baseline>
+          <alwaysOn>true</alwaysOn>
+          <updateRate>0.0</updateRate>
+          <cameraName>camera_ir</cameraName>
+          <imageTopicName>/camera/depth/image_raw</imageTopicName>
+          <cameraInfoTopicName>/camera/depth/camera_info</cameraInfoTopicName>
+          <depthImageTopicName>/camera/depth/image_raw</depthImageTopicName>
+          <depthImageInfoTopicName>/camera/depth/camera_info</depthImageInfoTopicName>
+          <pointCloudTopicName>/camera/depth/points</pointCloudTopicName>
+          <frameName>camera_link</frameName>
+          <pointCloudCutoff>0.05</pointCloudCutoff>
+          <distortionK1>0</distortionK1>
+          <distortionK2>0</distortionK2>
+          <distortionK3>0</distortionK3>
+          <distortionT1>0</distortionT1>
+          <distortionT2>0</distortionT2>
+          <CxPrime>0</CxPrime>
+          <Cx>0</Cx>
+          <Cy>0</Cy>
+          <focalLength>0</focalLength>
+          <hackBaseline>0</hackBaseline>
+          </plugin>
       </sensor>
     </gazebo>
 

@@ -1,0 +1,13 @@
+<launch>
+<!-- Launching the simulated environment as oulined in the bender_model package -->
+    <include file ="$(find bender_model)/bender_simulation.launch">
+        <arg name="model" default="$(find bender_model)/model.urdf.xacro"/>
+        <arg name="gui" default="false" />
+        <arg name="rvizconfig" default="$(find bender_model)/urdf.rviz"/>
+    </include>
+
+    <include file="$(find bender_2dnav)/Launch/move_base_ekf.launch"/>
+
+    <include file="$(find bender_2dnav)/Launch/localization_sim.launch"/>
+
+</launch>
