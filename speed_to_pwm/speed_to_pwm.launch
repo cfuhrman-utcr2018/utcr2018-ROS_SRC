@@ -1,0 +1,12 @@
+<launch>
+    <node pkg="speed_to_pwm" type="pwm_gen.jl" name="pwm_broadcaster"/>
+        <!--rosparam param="Kp">2</rosparam>
+        <rosparam param="Ki">0</rosparam>
+        <rosparam param="Kd">0</rosparam>
+        <rosparam param="out_min">-10</rosparam>
+        <rosparam param="out_max">10</rosparam>
+        <rosparam param="rate">30</rosparam>
+        <rosparam param="timeout_ticks">4</rosparam>
+        <rosparam param="rolling_pts">2</rosparam>
+    </node-->
+</launch>
