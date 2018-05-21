@@ -30,8 +30,8 @@ color = rosmessage('sensor_msgs/Image');
 depth_pub = rospublisher('/processed_depth','sensor_msgs/Image');
 color_pub = rospublisher('/processed_color', 'sensor_msgs/Image'); 
 
-color.Encoding = '64fc3';
-depth.Encoding = '32fc3';
+color.Encoding = 'rgb8';
+depth.Encoding = 'rgb8';
 
 color.Header.FrameId = 'lines_camera';
 depth.Header.FrameId = 'lines_camera';
@@ -47,15 +47,13 @@ depth.Header.FrameId = 'lines_camera';
 
     % Detect white lines and return an image showing only white lines:
     lines_image = process_image(im_ros, threshold_value);
-
-    % % create an RBG point cloud containing detected lines
-    % ptcloud = process_ptcloud(im_ros, depth_image, lines_image); % For 
-    %     % creating a MATLAB ptcloud to visualize data within MATLAB
-    %     figure
-    % pcshow(ptcloud);
-
     % Create an XYZ matrix containing only lines
     xyz_lines = depth_ros.*lines_image;
+    
+    % Convert the lines_image to RGB8 encoding
+    lines_image = im2uint8(lines_image);
+    % Convert xyz_lines into RGB8 encoding
+    xyz_lines = im2uint8(xyz_lines);
     
     time = rostime(now);
     color.Header.Stamp = time;
