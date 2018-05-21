@@ -1,0 +1,13 @@
+<launch>
+    <node pkg="differential_drive" type="twist_to_motors.py" name="twist_to_motors" output="screen">
+      <remap from="twist" to="cmd_vel"/>
+      <rosparam param="base_width">0.840</rosparam>
+    </node>
+
+    <node pkg="speed_to_pwm" type="pwm_gen.jl" name="pwm_broadcaster"/>
+
+    <node name="joy" pkg ="joy" type="joy_node"/>
+    <node name="teleop_twist_joy" pkg="teleop_twist_joy" type="teleop_node">
+        <param name="scale_angular" value="0.5"/>
+    </node>
+</launch>
