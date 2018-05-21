@@ -6,16 +6,18 @@ function processed_image = process_image(image, Threshold_value)
 %   for a pixel that does not
 % Author: Connor Fuhrman
 
-image = rgb2gray(image); % Flipping for correct robot 
-    % reference frame and grayscale for thresholding 
-TH = (image > Threshold_value);
+% Split the RBG image into 3 different channels
+image_r = image(:,:,1); image_g = image(:,:,2); image_b = image(:,:,3);
+
+gimage = rgb2gray(image); % Grayscale for Thresholding
+TH = (gimage > Threshold_value);
 BW = medfilt2(TH);
 F = bwareaopen(BW,30);
-% convert to double
-processed_image = im2double(F);
-% Create a pseudo-rgb image so that we can send to ROS using the rgb color
-% encoding. The data is the same. 
-processed_image(:,:,2) = processed_image(:,:,1);
-processed_image(:,:,3) = processed_image(:,:,1);
-% figure; imshow(processed_image)
+image_r(F == 0) = 0;
+image_g(F == 0) = 0;
+image_b(F == 0) = 0;
+
+processed_image(:,:,1) = image_r;
+processed_image(:,:,2) = image_g;
+processed_image(:,:,3) = image_b;
 end

@@ -43,7 +43,7 @@ depth.Header.FrameId = 'lines_camera';
     ptcloud_ros.PreserveStructureOnRead = true;
 
     im_ros = readRGB(ptcloud_ros); % create an rgb image from PointCloud
-    depth_ros = readXYZ(ptcloud_ros); % create depth mapping from PointCloud
+    depth_ros = readXYZ(ptcloud_ros); % create depth image from PointCloud
 
     % Detect white lines and return an image showing only white lines:
     lines_image = process_image(im_ros, threshold_value);
