@@ -6,8 +6,11 @@
 
     <node pkg="speed_to_pwm" type="pwm_gen.jl" name="pwm_broadcaster"/>
 
-    <node name="joy" pkg ="joy" type="joy_node"/>
-    <node name="teleop_twist_joy" pkg="teleop_twist_joy" type="teleop_node">
-        <param name="scale_angular" value="0.5"/>
+    <!--node name="joy" pkg ="joy" type="joy_node"/-->
+    <node pkg="differential_drive" type="virtual_joystick.py" name="joystick" output="screen">
+        <remap from="twist" to="cmd_vel"/>
     </node>
+    <!--node name="teleop_twist_joy" pkg="teleop_twist_joy" type="teleop_node">
+        <param name="scale_angular" value="0.5"/>
+    </node-->
 </launch>

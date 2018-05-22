@@ -62,8 +62,10 @@ function callback(msg::Float32Msg, pub_obj::Publisher{UInt8Msg})
     velocity = msg.data
     # Calculate the PWM
     pwm = calc_pwm(velocity)
+    pwm = round(pwm)
     # Convert to ROS message
     pwm = UInt8Msg(pwm)
+    #pwm = UInt8Msg(round(pwm)) # Must round to convert to intiger data type
     # Publish the data
     publish(pub_obj, pwm)
 end
