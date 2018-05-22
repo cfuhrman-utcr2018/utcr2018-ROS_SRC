@@ -54,18 +54,15 @@ while 1
         % Offset the velocity target by the effort
         r_total_motor = right_target + right_command;
         l_total_motor = left_target + left_command;
-        
-        
+        % Convert from m/s to motor RPM
+        left_rpm = abs(l_total_motor)*60/(2*pi*wheel_radius*gear_ratio);
+        right_rpm = abs(r_total_motor)*60/(2*pi*wheel_radius*gear_ratio);
     else
         % Convert from m/s to motor RPM
         left_rpm = abs(left_target)*60/(2*pi*wheel_radius*gear_ratio);
         right_rpm = abs(right_target)*60/(2*pi*wheel_radius*gear_ratio);
     end
 
-
-    
-    
-    
     if left_rpm > max_rot
         left_rpm = max_rot;
     end
