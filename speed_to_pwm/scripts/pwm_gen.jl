@@ -62,24 +62,28 @@ function callback(msg::Float32Msg, pub_obj::Publisher{UInt8Msg})
     velocity = msg.data
     # Calculate the PWM
     pwm = calc_pwm(velocity)
-    pwm = round(pwm)
+    pwm = round(pwm) # rounding to integer before converting
     # Convert to ROS message
     pwm = UInt8Msg(pwm)
-    #pwm = UInt8Msg(round(pwm)) # Must round to convert to intiger data type
     # Publish the data
     publish(pub_obj, pwm)
 end
 
 function main()
     init_node("speed_to_pwm")
-    #r_pub = Publisher{UInt8Msg}("Duty_Cycle_Right", queue_size=10)
-    #r_sub = Subscriber{Float32Msg}("rwheel_vtarget", callback, (r_pub,), queue_size=10)
+    r_pub = Publisher{UInt8Msg}("Duty_Cycle_Right", queue_size=10)
     l_pub = Publisher{UInt8Msg}("Duty_Cycle_Left", queue_size=10)
-    l_sub = Subscriber{Float32Msg}("lwheel_vtarget", callback, (l_pub,), queue_size=20)
-    #=if PID == true
-        r_effort =
-        l_effort
-    end=#
+
+    r_sub = Subscriber{Float32Msg}("rwheel_vtarget", callback, (r_pub,), queue_size=10)
+    l_sub = Subscriber{Float32Msg}("lwheel_vtarget", callback, (l_pub,), queue_size=10)
+
+    if PID == true
+        r_effort = Subscriber{Float32Msg}("rmotor_cmd", pid_callback, (r_pub, r_sub,), queue_size=10)
+        l_effort = Subscriber{Float32Msg}("lmotor_cmd", pid_callback, (l_pub, l_sub,), queue_size=10)
+#=    else
+        r_sub = Subscriber{Float32Msg}("rwheel_vtarget", callback, (r_pub,), queue_size=10)
+        l_sub = Subscriber{Float32Msg}("lwheel_vtarget", callback, (l_pub,), queue_size=10) =#
+    end
     spin()
 end
 
