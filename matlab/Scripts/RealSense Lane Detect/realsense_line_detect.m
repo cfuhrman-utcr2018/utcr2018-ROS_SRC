@@ -12,17 +12,23 @@ clear, clc, close all
 rosshutdown
 rosinit
 
+test = true;
+
 addpath(genpath('Functions')) % to use functions in different folder
 
-% % File for testing with sample ROS PointCloud2 variable
-%load ~/catkin_ws/src/matlab/'Saved Variables'/ROS_PointCloud2.mat
+if test == 1
+    % % File for testing with sample ROS PointCloud2 variable
+    load ~/catkin_ws/src/matlab/'Saved Variables'/ROS_PointCloud2.mat
+end
 
 % Initiailze variables:
 threshold_value = 0.7;
 seq = 1;
 
-% create subscriber to depth cloud:
-PointCloud_sub = rossubscriber('/camera/depth_registered/points');
+if test == 0 
+    % create subscriber to depth cloud:
+    PointCloud_sub = rossubscriber('/camera/depth_registered/points');
+end
 
 % create messages to pass the depth and rbg images
 depth = rosmessage('sensor_msgs/Image');
@@ -38,10 +44,11 @@ color.Header.FrameId = 'lines_camera';
 depth.Header.FrameId = 'lines_camera';
 
  while 1
-
-    % Get data from ROS
-    ptcloud_ros = receive(PointCloud_sub,10); % recieve the ROS cloud
-    ptcloud_ros.PreserveStructureOnRead = true;
+    if test == 0 
+        % Get data from ROS
+        ptcloud_ros = receive(PointCloud_sub,10); % recieve the ROS cloud
+        ptcloud_ros.PreserveStructureOnRead = true;
+    end
     
 %while 1
     im_ros = readRGB(ptcloud_ros); % create an rgb image from PointCloud
