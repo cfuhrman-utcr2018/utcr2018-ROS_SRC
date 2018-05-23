@@ -1,4 +1,7 @@
 <launch>
+
+    <include file="$(find realsense2_camera)/launch/rs_rgbd.launch"/>
+
     <group ns="cloud_gen">
 <!-- This launch file uses the depth_image_proc node to transform a color image and a depth image
     into an xyzrgb point cloud for use with the Navigation Stack -->
@@ -24,4 +27,6 @@
             <remap from="depth_registered/points"       to="$(arg out_cloud)"/>
         </node>
     </group>
+
+    <node pkg="rqt_graph" type="rqt_graph" name="rqt_graph"/>
 </launch>

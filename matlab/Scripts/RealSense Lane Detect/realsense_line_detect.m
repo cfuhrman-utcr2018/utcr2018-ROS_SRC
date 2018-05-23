@@ -38,7 +38,7 @@ depth_pub = rospublisher('/processed_depth','sensor_msgs/Image');
 color_pub = rospublisher('/processed_color', 'sensor_msgs/Image'); 
 
 color.Encoding = 'rgb8';
-depth.Encoding = 'rgb16';
+depth.Encoding = '16uc1';
 
 color.Header.FrameId = 'lines_camera';
 depth.Header.FrameId = 'lines_camera';
