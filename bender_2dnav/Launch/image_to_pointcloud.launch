@@ -13,12 +13,12 @@
 
         <!-- Nodelet manager for this pipeline -->
         <node pkg="nodelet" type="nodelet" args="manager"
-            name="standalone_nodelet" output="screen"/>
+            name="record_player_manager" output="screen"/>
 
         <!-- Construct point cloud of the rgb and depth topics -->
-        <node pkg="nodelet" type="nodelet" name="depth_image_proc"
-            args="load depth_image_proc/point_cloud_xyzrgb standalone_nodelet" output="screen">
-            <remap from="rgb/camera_info"               to="/camera/color/camera_info" />
+        <node pkg="nodelet" type="nodelet" name="cloudify"
+            args="load depth_image_proc/point_cloud_xyzrgb record_player_manager" output="screen">
+            <remap from="rgb/camera_info"               to="$(arg rgb_camera_info)" />
             <remap from="rgb/image_rect_color"          to="$(arg rgb_rimg_ect)"/>
             <remap from="depth_registered/image_rect"   to="$(arg depReg_imgrect)"/>
             <remap from="depth_registered/points"       to="$(arg out_cloud)"/>
