@@ -1,8 +1,9 @@
 <launch>
 
-    <include file="$(find realsense2_camera)/launch/rs_rgbd.launch"/>
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch"/>
 
-    <group ns="cloud_gen">
+
+    <!--group ns="cloud_gen"-->
 <!-- This launch file uses the depth_image_proc node to transform a color image and a depth image
     into an xyzrgb point cloud for use with the Navigation Stack -->
 
@@ -13,10 +14,22 @@
          <arg name="rgb_rimg_ect"        value="/processed_color"/>  <!--Rectified color image-->
          <arg name="depReg_imgrect"      value="/processed_depth"/>  <!--Rectified depth image-->
          <arg name="out_cloud"           value="/white_lines"/>
+         <arg name="dep_mm"              value="/camera/depth/image_rect_raw"/>
+         <arg name="dep_m"               value="/depth_image_meters"/>
 
         <!-- Nodelet manager for this pipeline -->
         <node pkg="nodelet" type="nodelet" args="manager"
             name="record_player_manager" output="screen"/>
+
+        <node pkg="nodelet" type="nodelet" args="manager"
+            name="convert_manager" output="screen"/>
+
+        <!-- Convert the raw depth image from mm to m -->
+        <node pkg="nodelet" type="nodelet" name="convert"
+            arg="load depth_image_proc/convert_metric convert_manager" output="screen">
+            <remap from="image_raw" to="$(arg dep_mm)"/>
+            <remap from="image"     to="$(arg dep_m)"/>
+        </node>
 
         <!-- Construct point cloud of the rgb and depth topics -->
         <node pkg="nodelet" type="nodelet" name="cloudify"
@@ -26,7 +39,7 @@
             <remap from="depth_registered/image_rect"   to="$(arg depReg_imgrect)"/>
             <remap from="depth_registered/points"       to="$(arg out_cloud)"/>
         </node>
-    </group>
+    <!--/group-->
 
     <node pkg="rqt_graph" type="rqt_graph" name="rqt_graph"/>
 </launch>

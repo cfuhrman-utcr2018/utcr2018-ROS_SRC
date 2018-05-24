@@ -12,7 +12,7 @@ clear, clc, close all
 rosshutdown
 rosinit
 
-test = true;
+test = false;
 
 addpath(genpath('Functions')) % to use functions in different folder
 
@@ -27,55 +27,55 @@ seq = 1;
 
 if test == 0 
     % create subscriber to depth cloud:
-    PointCloud_sub = rossubscriber('/camera/depth_registered/points');
+    color_sub = rossubscriber('/camera/color/image_raw');
+    %depth_sub = rossubscriber('/depth_image_meters');
+    depth_sub = rossubscriber('camera/depth/image_rect_raw')
 end
 
 % create messages to pass the depth and rbg images
-depth = rosmessage('sensor_msgs/Image');
-color = rosmessage('sensor_msgs/Image');
+depth_msg = rosmessage('sensor_msgs/Image');
+color_msg = rosmessage('sensor_msgs/Image');
 
 depth_pub = rospublisher('/processed_depth','sensor_msgs/Image');
 color_pub = rospublisher('/processed_color', 'sensor_msgs/Image'); 
 
-color.Encoding = 'rgb8';
-depth.Encoding = '16uc1';
+color_msg.Encoding = 'rgb8';
+depth_msg.Encoding = '16uc1';
 
-color.Header.FrameId = 'lines_camera';
-depth.Header.FrameId = 'lines_camera';
+color_msg.Header.FrameId = 'lines_camera';
+depth_msg.Header.FrameId = 'lines_camera';
 
  while 1
     if test == 0 
         % Get data from ROS
-        ptcloud_ros = receive(PointCloud_sub,10); % recieve the ROS cloud
-        ptcloud_ros.PreserveStructureOnRead = true;
+        depth_ros = receive(depth_sub);
+        color_ros = receive(color_sub);
     end
     
 %while 1
-    im_ros = readRGB(ptcloud_ros); % create an rgb image from PointCloud
-    depth_ros = readXYZ(ptcloud_ros); % create depth image from PointCloud
+    color = readImage(color_ros); depth = readImage(depth_ros);
+    color = im2double(color); depth = im2double(depth);
 
     % Detect white lines and return an image showing only white lines:
-    lines_image = process_image(im_ros, threshold_value);
-    % Create an XYZ matrix containing only lines
-    xyz_lines = depth_ros.*lines_image;
-    
+    [lines_image, xyz_lines] = process_image(color, depth, threshold_value);
+ 
     % Convert the lines_image to RGB8 encoding
     lines_image = im2uint8(lines_image);
-    % Convert xyz_lines into RGB8 encoding
+    % Convert xyz_lines into 16UC1 encoding
     xyz_lines = im2uint16(xyz_lines);
     
     time = rostime('now');
-    color.Header.Stamp = time;
-    depth.Header.Stamp = time;
+    color_msg.Header.Stamp = time;
+    depth_msg.Header.Stamp = time;
     
-    color.Header.Seq = seq;
-    depth.Header.Seq = seq;
+    color_msg.Header.Seq = seq;
+    depth_msg.Header.Seq = seq;
 
-    writeImage(depth, xyz_lines);
-    writeImage(color, lines_image);
+    writeImage(depth_msg, xyz_lines);
+    writeImage(color_msg, lines_image);
 
-    send(depth_pub, depth);
-    send(color_pub, color);
+    send(depth_pub, depth_msg);
+    send(color_pub, color_msg);
     
     seq = seq + 1;
 end
