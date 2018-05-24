@@ -1,6 +1,6 @@
 <launch>
 
-    <include file="$(find realsense2_camera)/launch/rs_camera.launch"/>
+    <include file="$(find realsense2_camera)/launch/rs_rgbd.launch"/>
 
 
     <group ns="cloud_gen">
@@ -14,6 +14,8 @@
          <arg name="rgb_rimg_ect"        value="/processed_color"/>  <!--Rectified color image-->
          <arg name="depReg_imgrect"      value="/processed_depth"/>  <!--Rectified depth image-->
          <arg name="out_cloud"           value="/white_lines"/>
+         <arg name="rvizconfig"          value="$(find bender_2dnav)/Rviz_Config/camera_cloudgen.rviz"/>
+
 
         <!-- Nodelet manager for this pipeline -->
         <node pkg="nodelet" type="nodelet" args="manager"
@@ -30,4 +32,7 @@
     </group>
 
     <node pkg="rqt_graph" type="rqt_graph" name="rqt_graph"/>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bender_2dnav)/Rviz_Config/camera_cloudgen.rviz" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="camera_tf" args="0 0 0 0 0 0 camera_color_optical_frame lines_link" />
+
 </launch>

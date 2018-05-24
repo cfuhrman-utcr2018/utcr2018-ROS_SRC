@@ -12,7 +12,7 @@ clear, clc, close all
 rosshutdown
 rosinit
 
-test = true;
+test = false;
 
 addpath(genpath('Functions')) % to use functions in different folder
 
@@ -37,16 +37,17 @@ depth_pub = rospublisher('/processed_depth','sensor_msgs/Image');
 color_pub = rospublisher('/processed_color', 'sensor_msgs/Image'); 
 
 color_msg.Encoding = 'rgb8';
-depth_msg.Encoding = '32fc1';
+depth_msg.Encoding = '32FC1';
 
-color_msg.Header.FrameId = 'lines_camera';
-depth_msg.Header.FrameId = 'lines_camera';
+color_msg.Header.FrameId = 'lines_link';
+depth_msg.Header.FrameId = 'lines_link';
 
  while 1
     if test == 0 
         % Get data from ROS
         ptcloud_ros = receive(pointcloud_sub);
     end
+    ptcloud_ros.PreserveStructureOnRead = true;
     
     % Get the RGB and XYZ ptcloud data
     color = readRGB(ptcloud_ros); depth = readXYZ(ptcloud_ros);
