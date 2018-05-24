@@ -22,5 +22,6 @@ color_processed_image(:,:,1) = image_r;
 color_processed_image(:,:,2) = image_g;
 color_processed_image(:,:,3) = image_b;
 
+F = uint16(F);
 depth_processed_image = F.*depth_image;
 end

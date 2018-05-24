@@ -25,7 +25,7 @@ depth_sub = rossubscriber('/camera/depth/image_rect_raw');
 depth_msg = rosmessage('sensor_msgs/Image');
 depth_pub = rospublisher('/processed_depth','sensor_msgs/Image');
 
-depth_msg.Encoding = '32FC1';
+depth_msg.Encoding = '16uc1';
 
 depth_msg.Header.FrameId = 'lines_link';
 
