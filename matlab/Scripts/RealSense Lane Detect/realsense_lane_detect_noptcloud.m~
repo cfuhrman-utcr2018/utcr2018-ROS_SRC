@@ -20,42 +20,33 @@ seq = 1;
 
 color_sub = rossubscriber('/camera/color/image_raw'); 
 depth_sub = rossubscriber('/camera/depth/image_rect_raw');
+info_sub = rossubscriber('/camera/color/camera_info');
 
 % create messages to pass the depth image
 depth_msg = rosmessage('sensor_msgs/Image');
-depth_pub = rospublisher('/processed_depth','sensor_msgs/Image');
+depth_pub = rospublisher('/matlab/processed_depth','sensor_msgs/Image');
+info_msg = rosmessage('sensor_msgs/CameraInfo');
+info_pub = rospublisher('/matlab/camera_info', 'sensor_msgs/CameraInfo');
 
-depth_msg.Encoding = '32FC1';
-
+depth_msg.Encoding = '16uc1';
 depth_msg.Header.FrameId = 'lines_link';
 
  while 1
      color_ros = receive(color_sub);
      depth_ros = receive(depth_sub);
+     info_ros = receive(info_sub);
+     info_msg = info
      
      color = readImage(color_ros);
-     depth = readImage
+     depth = readImage(depth_ros);
      
     % Detect white lines and return an image showing only white lines:
     [lines_image, xyz_lines] = process_image(color, depth, threshold_value);
  
-    % Convert the lines_image to RGB8 encoding
-    lines_image = im2uint8(lines_image);
-    % Convert xyz_lines into 32FC1 encoding
-    %xyz_lines = im2uint16(xyz_lines);
-    
     time = rostime('now');
-    color_msg.Header.Stamp = time;
     depth_msg.Header.Stamp = time;
-    
-    color_msg.Header.Seq = seq;
     depth_msg.Header.Seq = seq;
-
     writeImage(depth_msg, xyz_lines);
-    writeImage(color_msg, lines_image);
-
-    send(depth_pub, depth_msg);
-    send(color_pub, color_msg);
-    
+    send(depth_pub, depth_msg);    
     seq = seq + 1;
  end

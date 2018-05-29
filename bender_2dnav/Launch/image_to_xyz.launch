@@ -10,8 +10,8 @@
 <!-- This file is to be used with the Intel Realsense node rs_rgbd.launch and the MATLAB code titles
      realsense_lane_detect.m outputting the processed images-->
 
-         <arg name="rgb_camera_info"     value="/camera/color/camera_info"/>
-         <arg name="depReg_imgrect"      value="/processed_depth"/>  <!--Rectified depth image-->
+         <arg name="rgb_camera_info"     value="/matlab/camera_info"/>
+         <arg name="depReg_imgrect"      value="/matlab/processed_depth"/>  <!--Rectified depth image-->
          <arg name="out_cloud"           value="/white_lines"/>
          <arg name="rvizconfig"          value="$(find bender_2dnav)/Rviz_Config/camera_cloudgen.rviz"/>
 
@@ -23,7 +23,7 @@
         <!-- Construct point cloud of the rgb and depth topics -->
         <node pkg="nodelet" type="nodelet" name="xyz_cloud"
             args="load depth_image_proc/point_cloud_xyz record_player_manager" output="screen">
-            <remap from="/cloud_gen/camera_info"               to="$(arg rgb_camera_info)" />
+            <remap from="/camera_info"               to="$(arg rgb_camera_info)" />
             <remap from="/cloud_gen/image_rect"                to="$(arg depReg_imgrect)"/>
             <remap from="/cloud_gen/points"          to="$(arg out_cloud)"/>
         </node>
