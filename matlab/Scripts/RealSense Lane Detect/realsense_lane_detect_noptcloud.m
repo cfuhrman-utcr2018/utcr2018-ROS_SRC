@@ -15,7 +15,7 @@ rosinit
 addpath(genpath('Functions')) % to use functions in different folder
 
 % Initiailze variables:
-threshold_value = 0.7;
+threshold_value = 225.0;
 seq = 1;
 
 color_sub = rossubscriber('/camera/color/image_raw'); 
@@ -27,9 +27,15 @@ depth_msg = rosmessage('sensor_msgs/Image');
 depth_pub = rospublisher('/matlab/processed_depth','sensor_msgs/Image');
 info_msg = rosmessage('sensor_msgs/CameraInfo');
 info_pub = rospublisher('/matlab/camera_info', 'sensor_msgs/CameraInfo');
-
 depth_msg.Encoding = '32FC1';
 depth_msg.Header.FrameId = 'lines_link';
+
+% pass the color processed image for debugging
+color_msg = rosmessage('sensor_msgs/Image');
+color_pub = rospublisher('/matlab/processed_color', 'sensor_msgs/Image'); 
+color_msg.Encoding = 'rgb8';
+color_msg.Header.FrameId = 'lines_link';
+
 
  while 1
      color_ros = receive(color_sub);
@@ -52,5 +58,12 @@ depth_msg.Header.FrameId = 'lines_link';
     writeImage(depth_msg, xyz_lines);
     send(depth_pub, depth_msg);
     send(info_pub, info_msg);
+    
+    % Send the processed color image for debugging
+    color_msg.Header.Stamp = time;
+    color_msg.Header.Seq = seq;
+    writeImage(color_msg, lines_image);
+    send(color_pub, color_msg);
+
     seq = seq + 1;
  end
