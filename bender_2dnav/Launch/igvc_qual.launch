@@ -1,0 +1,128 @@
+<launch>
+<!-- This file launches all the nodes used in the 2018 Citadel Entry to the IGVC -->
+
+# Port Assignments
+    <arg name="LiDAR_port" default="/dev/ttyACM0" />
+    <arg name="Arduino_port" default="/dev/ttyACM1" />
+    <arg name="GPS_port" default="/dev/ttyACM2"/>
+
+# Coordinate Frame tf
+    <node pkg="tf2_ros" type="static_transform_publisher" name="LiDAR_Publisher" args="0.1 0 0 0 0 0 base_link laser" /> # LiDAR to base_link
+    <node pkg="tf2_ros" type="static_transform_publisher" name="lines_Publisher" args="0 0 0 0 0 0 camera_color_optical_frame lines_link" /> # Realsense camera to line_camera
+    <node pkg="tf2_ros" type="static_transform_publisher" name="camera_Publisher" args="0 0 3 0 0 0 camera_color_optical_frame base_link" /> # Realsense camera to base_link
+
+# URG node
+    <node name="lidar" pkg="urg_node" type="urg_node">
+        <param name="serial_port" value="$(arg LiDAR_port)"/>
+    </node>
+
+# Start the IMU node
+    <include file="$(find razor_imu_9dof)/launch/razor-pub.launch" />
+
+# Start the Arduino node
+    <node pkg="rosserial_python" type="serial_node.py" name="serial_node">
+      <param name="port" value="$(arg Arduino_port"/>
+      <param name="baud" value="57600"/>
+    </node>
+
+# Start the PWM Generation node
+    <node pkg="speed_to_pwm" type="pwm_gen.jl" name="pwm_gen" />
+
+# Start the Realsense Camera Node
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch"/>
+
+# Start the depth_image_proc node
+    <group ns="cloud_gen">
+    <!-- This launch file uses the depth_image_proc node to transform a color image and a depth image
+    into an xyzrgb point cloud for use with the Navigation Stack -->
+
+    <!-- This file is to be used with the Intel Realsense node rs_rgbd.launch and the MATLAB code titles
+     realsense_lane_detect.m outputting the processed images-->
+
+         <arg name="rgb_camera_info"     value="/camera/color/camera_info"/>
+         <arg name="depReg_imgrect"      value="/processed_depth"/>  <!--Rectified depth image-->
+         <arg name="out_cloud"           value="/white_lines"/>
+         <arg name="rvizconfig"          value="$(find bender_2dnav)/Rviz_Config/camera_cloudgen.rviz"/>
+        <!-- Nodelet manager for this pipeline -->
+        <node pkg="nodelet" type="nodelet" args="manager"
+            name="record_player_manager" output="screen"/>
+        <!-- Construct point cloud of the rgb and depth topics -->
+        <node pkg="nodelet" type="nodelet" name="cloudify"
+            args="load depth_image_proc/point_cloud_xyz record_player_manager" output="screen">
+            <remap from="camera_info"               to="$(arg rgb_camera_info)" />
+            <remap from="image_rect"                to="$(arg depReg_imgrect)"/>
+            <remap from="/points"                   to="$(arg out_cloud)"/>
+        </node>
+    </group>
+
+# Start the GPS nodes
+    <group ns="gps">
+        # Nmea string driver
+        <node pgk="nmea_navsat_driver" type="nmea_serial_driver" name="gps_driver">
+            <arg port="$(arg GPS_port)" />
+        </node>
+        # origin setter node
+        <include file="$(find gps_goal)/launch/initialize_origin.launch" />
+        # gps goal sender node
+        <include file="$(find gps_goal)/launch/gps_goal.launch" />
+    </group>
+
+# Start the differential drive nodes
+    <group ns="diff_drive">
+        # Initialize parameters
+        <rosparam param="ticks_meter">2469</rosparam>
+        <rosparam param ="encoder_max">2147483647</rosparam>
+        <rosparam param ="encoder_min">-2147483647</rosparam>
+        # Start the PID node
+        <node pkg="differential_drive" type="pid_velocity.py" name="right_pid">
+            <remap from="wheel" to="left_ticks"/>
+            <remap from="motor_cmd" to="lmotor_cmd"/>
+            <remap from="wheel_vtarget" to="lwheel_vtarget"/>
+            <remap from="wheel_vel" to="lwheel_vel"/>
+            <rosparam param="Kp">2</rosparam>
+            <rosparam param="Ki">0</rosparam>
+            <rosparam param="Kd">0</rosparam>
+            <rosparam param="out_min">-10</rosparam>
+            <rosparam param="out_max">10</rosparam>
+            <rosparam param="rate">30</rosparam>
+            <rosparam param="timeout_ticks">4</rosparam>
+            <rosparam param="rolling_pts">2</rosparam>
+        </node>
+        <node pkg="differential_drive" type="pid_velocity.py" name="left_pid">
+            <remap from="wheel" to="right_ticks"/>
+            <remap from="motor_cmd" to="rmotor_cmd"/>
+            <remap from="wheel_vtarget" to="rwheel_vtarget"/>
+            <remap from="wheel_vel" to="rwheel_vel"/>
+            <rosparam param="Kp">2</rosparam>
+            <rosparam param="Ki">0</rosparam>
+            <rosparam param="Kd">0</rosparam>
+            <rosparam param="out_min">-10</rosparam>
+            <rosparam param="out_max">10</rosparam>
+            <rosparam param="rate">30</rosparam>
+            <rosparam param="timeout_ticks">4</rosparam>
+            <rosparam param="rolling_pts">2</rosparam>
+        </node>
+        # Start the twist to motors node
+        <node pkg="differential_drive" type="twist_to_motors.py" name="twist_to_motors" output="screen">
+          <remap from="twist" to="cmd_vel"/>
+          <rosparam param="base_width">0.840</rosparam>
+        </node>
+        # Start the differential drive tf node
+        <node pkg ="differential_drive" type="diff_tf.py" name="diff_tf">
+          <remap from="lwheel" to="left_ticks"/>
+          <remap from="rwheel" to="right_ticks"/>
+        </node>
+    </group>
+
+# Start the Extended Kalmen Filter node (no GPS)
+    <include file="$(find bender_2dnav)/Launch/localization.launch"/>
+
+# Start the Navigation Stack
+    <node pkg="move_base" type="move_base" respawn="true" name="move_base" output="screen">
+      <rosparam file="$(find bender_2dnav)/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find bender_2dnav)/params/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find bender_2dnav)/params/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find bender_2dnav)/params/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find bender_2dnav)/params/base_local_planner_params.yaml" command="load" />
+    </node>
+</launch>

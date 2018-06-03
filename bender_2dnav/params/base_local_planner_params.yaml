@@ -1,0 +1,21 @@
+controller_frequency: 5.0
+
+TrajectoryPlannerROS:
+  max_vel_x: 1.0
+  min_vel_x: 0.0
+  max_vel_y: 0.0
+  min_vel_y: 0.0
+  max_vel_theta: 1.0
+  min_vel_theta: -1.0
+  min_in_place_vel_theta: 0.25
+  acc_lim_theta: 3.0
+  acc_lim_x: 3.0
+  acc_lim_y: 0
+  escape_vel: -2.0
+  holonomic_robot: false
+  # Parameters for a simulation
+  sim_time: 1.0
+  sim_granularity: 0.02
+  angular_sim_granularity: 0.02
+  dwa: true
+  meter_scoring: true

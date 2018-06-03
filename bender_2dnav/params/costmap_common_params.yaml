@@ -1,0 +1,20 @@
+obstacle_range: 0.25 # the maximum distance without updating the costmap
+raytrace_range: 1.5 # the range to which the robot will attempt to clear in front of itself
+footprint: [[-0.47, 0.47], [0.47, 0.47], [0.47, -0.47], [-0.47, -0.47]] # simple box configuration
+#robot_radius: ir_of_robot
+inflation_radius: 0.25 # 25 centemeters away from the robot - minimum distance away from an obsticle
+min_obstacle_height: 0.0
+max_obstacle_height: 10.0
+publish_frequency: 10.0
+
+obstacle_layer:
+    enabled: true
+    obstacle_range: 3.0
+    raytrace_range: 5.0
+    max_obstacle_height:    20.0            # 2.0 m set to higher than flight height
+    min_obstacle_height:    -20.0            # set just below flight height
+    inflation_radius: 0.7
+    track_unknown_space: true
+    combination_method: 1
+    observation_sources: LiDAR_scan
+    LiDAR_scan: {data_type: LaserScan, sensor_frame: hokuyo_link, clearing: true, marking: true, topic: /scan, inf_is_valid: false}
