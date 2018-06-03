@@ -1,4 +1,4 @@
-function [color_processed_image depth_processed_image] ...
+function [color_processed_image, depth_processed_image] ...
     = process_image(color_image, depth_image, Threshold_value)
 % This function takes an image and returns a vertically flipped image that
 % detects whites (especially lines). 
@@ -22,5 +22,6 @@ color_processed_image(:,:,1) = image_r;
 color_processed_image(:,:,2) = image_g;
 color_processed_image(:,:,3) = image_b;
 
+F = uint16(F);
 depth_processed_image = F.*depth_image;
 end
